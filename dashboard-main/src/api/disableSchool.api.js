@@ -1,4 +1,4 @@
-const URL = 'https://abacus-2ntk.onrender.com/school/disableSchool'
+const URL = https://sat-backend-production.up.railway.app/school/disableSchool'
 const Token = localStorage.getItem('O_authDB')
 
 const disableSchool = (schoolID, setAllSchools) => {

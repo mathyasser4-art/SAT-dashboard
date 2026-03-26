@@ -1,4 +1,4 @@
-const URL = 'https://abacus-2ntk.onrender.com/question/deleteQuestion/'
+const URL = https://sat-backend-production.up.railway.app/question/deleteQuestion/'
 const Token = localStorage.getItem('O_authDB')
 
 const deleteQuestion = (questionID, chapterID, setserverOperationError, setServerOperationLoading, setChapterDetails) => {

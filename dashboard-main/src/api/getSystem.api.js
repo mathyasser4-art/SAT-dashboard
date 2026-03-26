@@ -1,4 +1,4 @@
-const URL = 'https://abacus-2ntk.onrender.com/system/getAllSystem'
+const URL = https://sat-backend-production.up.railway.app/system/getAllSystem'
 
 const getSystem = (setAllSystem, setLoading) => {
     setLoading(true)

@@ -1,4 +1,4 @@
-const URL = 'https://abacus-2ntk.onrender.com/question/addQuestion'
+const URL = https://sat-backend-production.up.railway.app/question/addQuestion'
 const Token = localStorage.getItem('O_authDB')
 
 const addQuestion = (data, setserverOperationError, setServerOperationLoading, setQuesionAdded, setQuesionID, questionType, setQuesionGraphAdded) => {

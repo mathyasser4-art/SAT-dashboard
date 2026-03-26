@@ -1,4 +1,4 @@
-const URL = 'https://abacus-2ntk.onrender.com/school/addSchool'
+const URL = https://sat-backend-production.up.railway.app/school/addSchool'
 const Token = localStorage.getItem('O_authDB')
 
 const addSchool = (data, setserverOperationError, setServerOperationLoading, setAllSchools) => {

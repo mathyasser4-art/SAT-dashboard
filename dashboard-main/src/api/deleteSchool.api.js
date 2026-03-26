@@ -1,4 +1,4 @@
-const URL = 'https://abacus-2ntk.onrender.com/school/deleteSchool'
+const URL = https://sat-backend-production.up.railway.app/school/deleteSchool'
 const Token = localStorage.getItem('O_authDB')
 
 const deleteSchool = (schoolID, setserverOperationError, setServerOperationLoading, setAllSchools) => {

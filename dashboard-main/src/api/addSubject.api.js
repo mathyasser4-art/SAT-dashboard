@@ -1,4 +1,4 @@
-const URL = 'https://abacus-2ntk.onrender.com/subject/addSubject'
+const URL = https://sat-backend-production.up.railway.app/subject/addSubject'
 const Token = localStorage.getItem('O_authDB')
 
 const addSubject = (data, setserverOperationError, setServerOperationLoading, setAllSystem) => {

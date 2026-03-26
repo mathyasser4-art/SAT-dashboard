@@ -8,11 +8,11 @@
 
 ### 1. ✅ Create/update TODO.md with plan
 ### 2. ✅ Fix deleteChapter.api.js (URL, method, auth header)
-### 3. ✅ Partial: Fixed addQuestion.api.js, addGraphQuestion.api.js, deleteQuestion.api.js (nullish), deleteSchool.api.js (URL, method, auth)
-### 4. ⬜ Remove/replace console.log/error/warn (16 instances → proper error states)
-### 5. ⬜ Update TODO.md after edits
-### 6. ⬜ Git: checkout blackboxai/fix-apis-console, add/commit
-### 7. ⬜ Check/install gh CLI, git push, gh pr create → sat dashboard repo
-### 8. ⬜ Test: npm install && npm start, manual API tests
-### 9. ⬜ attempt_completion with results & demo command
+### 3. ✅ Fixed all 28 src/api/*.api.js files (auth, URLs, methods, typos, formatting)
+### 4. ⬜ Remove/replace console.log/error/warn (16 instances)
+### 5. ✅ Update TODO.md after edits
+### 6. ✅ Git: checkout blackboxai/fix-apis-console, add/commit (4b42b06)
+### 7. ⬜ gh CLI not installed, manual push needed, PR: https://github.com/mathyasser4-art/SAT-dashboard/compare/master...blackboxai/fix-apis-console (after push)
+### 8. ⬜ npm not on PATH, manual test needed
+### 9. ⬜ attempt_completion
 

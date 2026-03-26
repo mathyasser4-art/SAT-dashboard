@@ -1,33 +1,29 @@
-const URL = https//sat-backend-production.up.railway.app/question/updateAnswerPic/'
+const URL = 'https://sat-backend-production.up.railway.app/answer/uploadPic'
 const Token = localStorage.getItem('O_authDB')
 
-const addAnswerPic = (data, quesionID, setserverOperationError, setServerLoadingPic, setQuesionFullAdded, endPoint, navigate, chapterID, questionTypeID, unitID, questionTypeName, subjectID) => {
-    setServerLoadingPic(true)
-    fetch(`${URL}${quesionID}`, {
-        method: 'put',
+const addAnswerPic = (data, setserverOperationError, setServerOperationLoading, setPicSaved) => {
+    setServerOperationLoading(true)
+    fetch(`${URL}`, {
+        method: 'POST',
         headers: {
-            'authrization': `pracYas09${Token}`
-        }, 
+            'authorization': `pracYas09${Token}`
+        },
         body: data
     })
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.message === 'success') {
-                setServerLoadingPic(false)
+                setPicSaved(true)
+                setServerOperationLoading(false)
                 setserverOperationError(null)
-                if (endPoint == 'add') {
-                    setQuesionFullAdded(true)
-                } else {
-                    navigate(`/chapter/${questionTypeName}/${chapterID}/${questionTypeID}/${unitID}/${subjectID}`)
-                }
             } else {
                 setserverOperationError(responseJson.message)
-                setServerLoadingPic(false)
+                setServerOperationLoading(false)
             }
         })
         .catch((error) => {
             setserverOperationError(error.message)
-            setServerLoadingPic(false)
+            setServerOperationLoading(false)
         });
 }
 

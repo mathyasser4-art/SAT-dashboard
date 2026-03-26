@@ -1,9 +1,9 @@
-const URL = 'https://sat-backend-production.up.railway.app'/admin/login'
+const URL = 'https://sat-backend-production.up.railway.app/admin/login'
 
 const login = (userData, setServerError, setLoading) => {
     setLoading(true)
     fetch(`${URL}`, {
-        method: 'post',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData)
     })

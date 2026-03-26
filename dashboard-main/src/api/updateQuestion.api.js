@@ -1,12 +1,12 @@
-const URL = 'https://sat-backend-production.up.railway.app'/question/updateQuestion/'
+const URL = 'https://sat-backend-production.up.railway.app/question/updateQuestion/'
 const Token = localStorage.getItem('O_authDB')
 
 const updateQuestion = (data, questionID, setserverOperationError, setServerOperationLoading, setQuesionAdded) => {
     setServerOperationLoading(true)
     fetch(`${URL}${questionID}`, {
-        method: 'put',
+        method: 'PUT',
         headers: {
-            'authrization': `pracYas09${Token}`
+            'authorization': `pracYas09${Token}`
         }, 
         body: data
     })

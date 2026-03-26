@@ -4,10 +4,10 @@ const Token = localStorage.getItem('O_authDB')
 const updateUnit = (data, questionTypeID, unitID, subjectID, setserverOperationError, setServerOperationLoading, setAllUnit) => {
     setServerOperationLoading(true)
     fetch(`${URL}/${questionTypeID}/${unitID}/${subjectID}`, {
-        method: 'put',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'authrization': `pracYas09${Token}`
+            'authorization': `pracYas09${Token}`
         },
         body: JSON.stringify(data)
     })

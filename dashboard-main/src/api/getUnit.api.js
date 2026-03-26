@@ -1,9 +1,9 @@
-const URL = 'https://sat-backend-production.up.railway.app'/unit/getUnit'
+const URL = 'https://sat-backend-production.up.railway.app/unit/getUnit'
 
 const getUnit = (questionTypeID, subjectID, setAllUnit, setLoading) => {
     setLoading(true)
     fetch(`${URL}/${questionTypeID}/${subjectID}`, {
-        method: 'get',
+        method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     })
         .then((response) => response.json())

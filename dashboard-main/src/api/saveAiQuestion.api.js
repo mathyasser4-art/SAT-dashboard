@@ -1,4 +1,4 @@
-const BASE_URL = 'https://sat-backend-production.up.railway.app'/question/addQuestion'
+const BASE_URL = 'https://sat-backend-production.up.railway.app/question/addQuestion'
 
 /**
  * Saves a single AI-generated question to the database.
@@ -31,9 +31,9 @@ const saveAiQuestion = (questionData, chapterID) => {
     }
 
     return fetch(BASE_URL, {
-        method: 'post',
+        method: 'POST',
         headers: {
-            'authrization': `pracYas09${Token}`
+            'authorization': `pracYas09${Token}`
         },
         body: data
     }).then(res => res.json())

@@ -1,4 +1,4 @@
-const URL = https://sat-backend-production.up.railway.app/user/get'
+const URL = 'https://sat-backend-production.up.railway.app'/user/get'
 const Token = localStorage.getItem('O_authDB')
 
 const getUsers = (pageNumber, setLoading, setAllClients, setPageNumber, setTotalPage) => {

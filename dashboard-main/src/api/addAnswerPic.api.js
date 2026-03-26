@@ -1,4 +1,4 @@
-const URL = https://sat-backend-production.up.railway.app/question/updateAnswerPic/'
+const URL = https//sat-backend-production.up.railway.app/question/updateAnswerPic/'
 const Token = localStorage.getItem('O_authDB')
 
 const addAnswerPic = (data, quesionID, setserverOperationError, setServerLoadingPic, setQuesionFullAdded, endPoint, navigate, chapterID, questionTypeID, unitID, questionTypeName, subjectID) => {

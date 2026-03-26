@@ -1,4 +1,4 @@
-const BASE_URL = https://sat-backend-production.up.railway.app/question/addQuestion'
+const BASE_URL = 'https://sat-backend-production.up.railway.app'/question/addQuestion'
 
 /**
  * Saves a single AI-generated question to the database.

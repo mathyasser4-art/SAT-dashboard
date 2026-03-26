@@ -1,4 +1,4 @@
-const URL = https://sat-backend-production.up.railway.app/question/addGraphQuestion'
+const URL = 'https://sat-backend-production.up.railway.app'/question/addGraphQuestion'
 const Token = localStorage.getItem('O_authDB')
 
 const addGraphQuestion = (data, quesionID, setServerGraphError, setServerGraphLoading, setQuesionAdded) => {

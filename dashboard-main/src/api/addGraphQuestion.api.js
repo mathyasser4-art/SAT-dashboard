@@ -1,12 +1,12 @@
-const URL = 'https://sat-backend-production.up.railway.app'/question/addGraphQuestion'
+const URL = 'https://sat-backend-production.up.railway.app/question/addGraphQuestion'
 const Token = localStorage.getItem('O_authDB')
 
-const addGraphQuestion = (data, quesionID, setServerGraphError, setServerGraphLoading, setQuesionAdded) => {
-    setServerGraphLoading(true)
-    fetch(`${URL}/${quesionID}`, {
-        method: 'put',
+const addGraphQuestion = (data, setserverOperationError, setServerOperationLoading, setQuesionAdded, setQuesionID) => {
+    setServerOperationLoading(true)
+    fetch(`${URL}`, {
+        method: 'POST',
         headers: {
-            'authrization': `pracYas09${Token}`
+            'authorization': `pracYas09${Token}`
         },
         body: data
     })
@@ -14,16 +14,17 @@ const addGraphQuestion = (data, quesionID, setServerGraphError, setServerGraphLo
         .then((responseJson) => {
             if (responseJson.message === 'success') {
                 setQuesionAdded(true)
-                setServerGraphLoading(false)
-                setServerGraphError(null)
+                setQuesionID(responseJson.questionData._id)
+                setServerOperationLoading(false)
+                setserverOperationError(null)
             } else {
-                setServerGraphError(responseJson.message)
-                setServerGraphLoading(false)
+                setserverOperationError(responseJson.message)
+                setServerOperationLoading(false)
             }
         })
         .catch((error) => {
-            setServerGraphError(error.message)
-            setServerGraphLoading(false)
+            setserverOperationError(error.message)
+            setServerOperationLoading(false)
         });
 }
 

@@ -1,13 +1,13 @@
-const URL = 'https://sat-backend-production.up.railway.app'/question/updateAutoCorrect/'
+const URL = 'https://sat-backend-production.up.railway.app/question/updateAutoCorrect/'
 const Token = localStorage.getItem('O_authDB')
 
 const updateAutoCorrect = (questionID, setserverOperationError, setAutoCorrectLoading, setQuestionDetails) => {
     setAutoCorrectLoading(true)
     fetch(`${URL}${questionID}`, {
-        method: 'put',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'authrization': `pracYas09${Token}`
+            'authorization': `pracYas09${Token}`
         }
     })
         .then((response) => response.json())

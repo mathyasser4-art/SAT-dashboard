@@ -1,13 +1,13 @@
-const URL = 'https://sat-backend-production.up.railway.app'/chapter/updateChapter/'
+const URL = 'https://sat-backend-production.up.railway.app/chapter/updateChapter/'
 const Token = localStorage.getItem('O_authDB')
 
 const updateChapter = (data, chapterID, setserverOperationError, setServerOperationLoading, setChapterDetails) => {
     setServerOperationLoading(true)
     fetch(`${URL}${chapterID}`, {
-        method: 'put',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'authrization': `pracYas09${Token}`
+            'authorization': `pracYas09${Token}`
         },
         body: JSON.stringify(data)
     })

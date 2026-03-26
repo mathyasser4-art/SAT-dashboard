@@ -1,13 +1,13 @@
-const URL = 'https://sat-backend-production.up.railway.app'/subject/addSubject'
+const URL = 'https://sat-backend-production.up.railway.app/subject/addSubject'
 const Token = localStorage.getItem('O_authDB')
 
-const addSubject = (data, setserverOperationError, setServerOperationLoading, setAllSystem) => {
+const addSubject = (data, setserverOperationError, setServerOperationLoading, setAllSubject) => {
     setServerOperationLoading(true)
-    fetch(URL, {
-        method: 'post',
+    fetch(`${URL}`, {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'authrization': `pracYas09${Token}`
+            'authorization': `pracYas09${Token}`
         },
         body: JSON.stringify(data)
     })
@@ -17,7 +17,7 @@ const addSubject = (data, setserverOperationError, setServerOperationLoading, se
                 document.querySelector('.add-subject-popup').classList.replace('d-flex', 'd-none');
                 setServerOperationLoading(false)
                 setserverOperationError(null)
-                setAllSystem(responseJson.allSystem)
+                setAllSubject(responseJson.allSubject)
             } else {
                 setserverOperationError(responseJson.message)
                 setServerOperationLoading(false)

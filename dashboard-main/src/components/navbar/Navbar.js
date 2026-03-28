@@ -4,12 +4,14 @@ import logo from '../../logo.png'
 import '../../reusable.css'
 import './Navbar.css'
 
-const Navbar = () => {
+const Navbar = ({ isAuth }) => {
 
     const logOut = () => {
         localStorage.removeItem('O_authDB')
         window.location.reload();
     }
+
+    if (!isAuth) return null;
 
     return (
         <nav>

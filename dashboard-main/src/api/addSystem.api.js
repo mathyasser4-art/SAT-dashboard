@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app';/system/addSystem
+const URL = 'https://sat-backend-production.up.railway.app/system/addSystem'
 const Token = localStorage.getItem('O_authDB')
 
 const addSystem = (data, setserverOperationError, setServerOperationLoading, setAllSystem) => {

@@ -13,7 +13,11 @@ import Users from './pages/users/Users'
 import AiGenerate from './pages/aiGenerate/AiGenerate'
 
 function App() {
+  const [isAuth, setIsAuth] = useState(false);
+
   useEffect(() => {
+    const token = localStorage.getItem('O_authDB');
+    setIsAuth(!!token);
     window.addEventListener('error', e => {
       if (e.message === 'ResizeObserver loop completed with undelivered notifications.') {
         const resizeObserverErrDiv = document.getElementById(
@@ -31,24 +35,22 @@ function App() {
       }
     });
   }, []);
-  // Bypass login - always treat as authenticated
-  localStorage.setItem('O_authDB', 'bypassed_token');
-  const isAuth = true;
+
   return (
     <>
-      <Navbar />
+      <Navbar isAuth={isAuth} />
       <Routes>
-        <Route path='/auth' element={<Navigate to='/questionType' />} />
-        <Route path='/' element={<Navigate to='/questionType' />} />
-        <Route path='/questionType' element={<QuestionType />} />
-        <Route path='/subject/:questionTypeName/:questionTypeID' element={<Subject />} />
-        <Route path='/unit/:questionTypeName/:questionTypeID/:subjectID' element={<Unit />} />
-        <Route path='/chapter/:questionTypeName/:chapterID/:questionTypeID/:unitID/:subjectID' element={<Chapter />} />
-        <Route path='/addQuestion/:questionTypeName/:chapterName/:chapterID/:questionTypeID/:unitID/:subjectID/:questionNum' element={<AddQuestion />} />
-        <Route path='/updateQuestion/:questionTypeName/:questionID/:questionTypeID/:unitID/:subjectID' element={<UpdateQuestion />} />
-        <Route path='/school' element={<School />} />
-        <Route path='/users' element={<Users />} />
-        <Route path='/aiGenerate/:questionTypeName/:chapterName/:chapterID/:questionTypeID/:unitID/:subjectID' element={<AiGenerate />} />
+        <Route path='/login' element={!isAuth ? <Login /> : <Navigate to='/questionType' />} />
+        <Route path='/' element={isAuth ? <Navigate to='/questionType' /> : <Navigate to='/login' />} />
+        <Route path='/questionType' element={isAuth ? <QuestionType /> : <Navigate to='/login' />} />
+        <Route path='/subject/:questionTypeName/:questionTypeID' element={isAuth ? <Subject /> : <Navigate to='/login' />} />
+        <Route path='/unit/:questionTypeName/:questionTypeID/:subjectID' element={isAuth ? <Unit /> : <Navigate to='/login' />} />
+        <Route path='/chapter/:questionTypeName/:chapterID/:questionTypeID/:unitID/:subjectID' element={isAuth ? <Chapter /> : <Navigate to='/login' />} />
+        <Route path='/addQuestion/:questionTypeName/:chapterName/:chapterID/:questionTypeID/:unitID/:subjectID/:questionNum' element={isAuth ? <AddQuestion /> : <Navigate to='/login' />} />
+        <Route path='/updateQuestion/:questionTypeName/:questionID/:questionTypeID/:unitID/:subjectID' element={isAuth ? <UpdateQuestion /> : <Navigate to='/login' />} />
+        <Route path='/school' element={isAuth ? <School /> : <Navigate to='/login' />} />
+        <Route path='/users' element={isAuth ? <Users /> : <Navigate to='/login' />} />
+        <Route path='/aiGenerate/:questionTypeName/:chapterName/:chapterID/:questionTypeID/:unitID/:subjectID' element={isAuth ? <AiGenerate /> : <Navigate to='/login' />} />
       </Routes>
     </>
   );

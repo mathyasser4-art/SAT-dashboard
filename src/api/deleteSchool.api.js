@@ -1,7 +1,7 @@
 const URL = 'https://sat-backend-production.up.railway.app/school/deleteSchool';
-const Token = localStorage.getItem('O_authDB');
 
 const deleteSchool = (schoolID, setserverOperationError, setServerOperationLoading, setAllSchools) => {
+    const Token = localStorage.getItem('O_authDB')
     setServerOperationLoading(true);
     fetch(`${URL}/${schoolID}`, {
         method: 'DELETE',

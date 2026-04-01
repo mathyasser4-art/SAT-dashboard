@@ -1,7 +1,7 @@
 const URL = 'https://sat-backend-production.up.railway.app/question/deleteQuestion/'
-const Token = localStorage.getItem('O_authDB')
 
 const deleteQuestion = (questionID, chapterID, setserverOperationError, setServerOperationLoading, setChapterDetails) => {
+    const Token = localStorage.getItem('O_authDB')
     setServerOperationLoading(true)
     fetch(`${URL}${questionID}/${chapterID}`, {
         method: 'DELETE',
@@ -13,7 +13,7 @@ const deleteQuestion = (questionID, chapterID, setserverOperationError, setServe
         .then((response) => response.json())
         .then((responseJson) => {
             if (responseJson.message === 'success') {
-            document.querySelector('.delete-question-popup')?.classList.replace('d-flex', 'd-none');
+                document.querySelector('.delete-question-popup')?.classList.replace('d-flex', 'd-none');
                 setServerOperationLoading(false)
                 setserverOperationError(null)
                 setChapterDetails(responseJson.chapter)

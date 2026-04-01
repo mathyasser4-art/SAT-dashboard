@@ -1,7 +1,7 @@
-const URL = 'http://localhost:8000/system/updateSystem'
-const Token = localStorage.getItem('O_authDB')
+const URL = 'https://sat-backend-production.up.railway.app/system/updateSystem'
 
 const updateSystem = (data, systemID, setserverOperationError, setServerOperationLoading, setAllSystem) => {
+    const Token = localStorage.getItem('O_authDB')
     setServerOperationLoading(true)
     fetch(`${URL}/${systemID}`, {
         method: 'PUT',

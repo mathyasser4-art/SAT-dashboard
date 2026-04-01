@@ -1,7 +1,7 @@
 const URL = 'https://sat-backend-production.up.railway.app/school/disableSchool'
-const Token = localStorage.getItem('O_authDB')
 
 const disableSchool = (schoolID, setAllSchools) => {
+    const Token = localStorage.getItem('O_authDB')
     fetch(`${URL}/${schoolID}`, {
         method: 'PUT',
         headers: {

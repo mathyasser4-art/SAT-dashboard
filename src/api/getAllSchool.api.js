@@ -1,7 +1,7 @@
 const URL = 'https://sat-backend-production.up.railway.app/school/getSchool'
-const Token = localStorage.getItem('O_authDB')
 
 const getAllSchool = (setAllSchools, setLoading) => {
+    const Token = localStorage.getItem('O_authDB')
     setLoading(true)
     fetch(`${URL}`, {
         method: 'GET',

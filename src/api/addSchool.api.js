@@ -1,13 +1,13 @@
 const URL = 'https://sat-backend-production.up.railway.app/school/addSchool'
-const Token = localStorage.getItem('O_authDB')
 
 const addSchool = (data, setserverOperationError, setServerOperationLoading, setAllSchools) => {
+    const Token = localStorage.getItem('O_authDB')
     setServerOperationLoading(true)
     fetch(`${URL}`, {
         method: 'post',
         headers: {
             'Content-Type': 'application/json',
-            'authrization': `pracYas09${Token}`
+            'authorization': `pracYas09${Token}`
         },
         body: JSON.stringify(data)
     })

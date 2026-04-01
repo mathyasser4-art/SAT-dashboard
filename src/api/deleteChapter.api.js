@@ -1,7 +1,7 @@
 const URL = 'https://sat-backend-production.up.railway.app/chapter/deleteChapter';
-const Token = localStorage.getItem('O_authDB');
 
 const deleteChapter = (chapterID, setserverOperationError, setServerOperationLoading, navigate, questionTypeID, unitID, questionTypeName, subjectID) => {
+    const Token = localStorage.getItem('O_authDB')
     setServerOperationLoading(true);
     fetch(`${URL}/${chapterID}/${unitID}`, {
         method: 'DELETE',

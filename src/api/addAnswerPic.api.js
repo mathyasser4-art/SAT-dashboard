@@ -1,7 +1,7 @@
 const URL = 'https://sat-backend-production.up.railway.app/answer/uploadPic'
-const Token = localStorage.getItem('O_authDB')
 
 const addAnswerPic = (data, setserverOperationError, setServerOperationLoading, setPicSaved) => {
+    const Token = localStorage.getItem('O_authDB')
     setServerOperationLoading(true)
     fetch(`${URL}`, {
         method: 'POST',

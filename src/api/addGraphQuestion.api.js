@@ -1,7 +1,7 @@
 const URL = 'https://sat-backend-production.up.railway.app/question/addGraphQuestion';
-const Token = localStorage.getItem('O_authDB');
 
 const addGraphQuestion = (data, setserverOperationError, setServerOperationLoading, setQuestionAdded, setQuestionID) => {
+    const Token = localStorage.getItem('O_authDB')
     setServerOperationLoading(true);
     fetch(`${URL}`, {
         method: 'POST',

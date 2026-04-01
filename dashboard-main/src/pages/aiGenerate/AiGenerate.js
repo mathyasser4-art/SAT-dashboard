@@ -23,66 +23,54 @@ const fileToBase64 = (file) => new Promise((resolve, reject) => {
     reader.readAsDataURL(file)
 })
 
-const buildPrompt = (
-    questionType,
-    topic,
-    count,
-    chapterName,
-    numberOfRows,
-    numberOfDigits,
-    operations,
-    skillLevel,
-    attachmentContext
-) => {
-    const typeLabel = questionType === 'MCQ' ? 'multiple-choice (MCQ)' : 'open-ended essay'
+const buildPrompt = (topic, chapterName, attachmentContext) => {
     const mcqShape = `{
+  "type": "MCQ",
   "question": "Question text here",
   "correctAnswer": "The one correct answer",
   "wrongAnswer": ["Wrong answer 1", "Wrong answer 2", "Wrong answer 3"],
   "questionPoints": 2
 }`
     const essayShape = `{
+  "type": "Essay",
   "question": "Question text here",
-  "answer": ["Accepted answer 1", "Accepted answer 2"],
+  "answer": ["Accepted answer 1"],
   "questionPoints": 2
 }`
-    const shape = questionType === 'MCQ' ? mcqShape : essayShape
-    const selectedOperations = operations.length > 0 ? operations.join(', ') : 'addition (+)'
-    const selectedSkillLevel = skillLevel.trim() || 'basic (direct)'
 
-    return `You are an expert abacus worksheet creator and question extractor.
-Generate exactly ${count} ${typeLabel} abacus questions for the chapter "${chapterName}".
+    return `You are an expert SAT math question extractor and creator.
 
-ABACUS REQUIREMENTS:
-- Topic / extra instructions: "${topic}"
-- Number of rows per question: ${numberOfRows}
-- Number of digits: ${numberOfDigits}
-- Allowed operations: ${selectedOperations}
-- Abacus skill / level: ${selectedSkillLevel}
+${attachmentContext
+        ? `Your PRIMARY task: read the attached file and extract ALL SAT math questions from it for the chapter "${chapterName}". Do NOT limit the number of questions — extract every single question you find in the file.`
+        : `Generate SAT math practice questions for the chapter "${chapterName}".`
+    }
+
+${topic ? `Additional instructions / topic context: "${topic}"` : ''}
 
 FILE HANDLING RULES:
-- If an attached file contains existing questions, read them carefully and convert them into dashboard-ready questions.
-- Preserve the meaning of the source questions from the file, but normalize wording if needed.
-- If the file includes answer choices or answers, use them to produce the correct dashboard JSON.
-- If the file contains fewer than ${count} usable questions, create the remaining questions in the same style and difficulty.
-- If no file is attached, generate all questions from the topic instructions only.
+- Extract every question from the attached file with no count restriction.
+- Preserve the original question text and answer choices exactly as written.
+- If a question has answer choices (A, B, C, D or 4 options), treat it as MCQ. Identify the correct answer from any answer key provided.
+- If a question requires a typed/numeric answer with no choices, treat it as Essay.
+- If the file contains images of questions, describe the math problem in text form as accurately as possible.
+- If no file is attached, generate SAT-style math questions on the given topic.
 
 STRICT RULES:
 - Return ONLY a valid JSON object. No markdown, no code blocks, no explanation.
-- Every generated question must be specifically for abacus practice.
-- Respect the requested row count, digit count, operations, and abacus skill level.
-- Use plain text only.
+- Each question MUST include a "type" field: either "MCQ" or "Essay".
 - For MCQ: provide exactly 3 wrong answers and 1 correct answer.
-- For Essay: provide 1-3 accepted answer variations.
+- For Essay: provide 1–3 accepted answer variations.
 - questionPoints should be between 1 and 5.
+- Use plain text for math expressions (e.g. "x^2 + 3x - 4 = 0", "sqrt(25)", "3/4").
 
 ATTACHMENT CONTEXT:
 ${attachmentContext || 'No attachment was provided.'}
 
-Return this exact JSON structure:
+Return this exact JSON structure (mix MCQ and Essay as appropriate based on the file):
 {
   "questions": [
-    ${shape}
+    ${mcqShape},
+    ${essayShape}
   ]
 }`
 }
@@ -94,10 +82,7 @@ const stripMarkdown = (text) => {
         .trim()
 }
 
-const buildGeminiParts = async ({
-    prompt,
-    attachmentFile
-}) => {
+const buildGeminiParts = async ({ prompt, attachmentFile }) => {
     const parts = [{ text: prompt }]
 
     if (!attachmentFile) {
@@ -128,12 +113,6 @@ const AiGenerate = () => {
 
     const [apiKey, setApiKey] = useState('')
     const [topic, setTopic] = useState('')
-    const [questionType, setQuestionType] = useState('MCQ')
-    const [numberOfRows, setNumberOfRows] = useState(3)
-    const [numberOfDigits, setNumberOfDigits] = useState(1)
-    const [operations, setOperations] = useState(['+'])
-    const [skillLevel, setSkillLevel] = useState('Basic (direct)')
-    const [count, setCount] = useState(10)
     const [attachmentFile, setAttachmentFile] = useState(null)
     const [status, setStatus] = useState('idle') // idle | generating | saving | done | error
     const [progress, setProgress] = useState({ current: 0, total: 0 })
@@ -148,26 +127,11 @@ const AiGenerate = () => {
     const validate = () => {
         if (!apiKey.trim()) { setErrorMessage('API key is required'); return false }
         if (!topic.trim() && !attachmentFile) { setErrorMessage('Add a topic or attach a file'); return false }
-        if (!numberOfRows || numberOfRows < 1 || numberOfRows > 20) { setErrorMessage('Enter a number of rows between 1 and 20'); return false }
-        if (!numberOfDigits || numberOfDigits < 1 || numberOfDigits > 10) { setErrorMessage('Enter a number of digits between 1 and 10'); return false }
-        if (!operations.length) { setErrorMessage('Select at least one operation'); return false }
-        if (!skillLevel.trim()) { setErrorMessage('Skill level is required'); return false }
-        if (!count || count < 1 || count > 100) { setErrorMessage('Enter a number of questions between 1 and 100'); return false }
-
         if (attachmentFile && attachmentFile.size > 20 * 1024 * 1024) {
             setErrorMessage('Attached files must be smaller than 20 MB')
             return false
         }
-
         return true
-    }
-
-    const handleOperationChange = (operation) => {
-        setOperations(prev =>
-            prev.includes(operation)
-                ? prev.filter(item => item !== operation)
-                : [...prev, operation]
-        )
     }
 
     const handleFileChange = async (event) => {
@@ -209,7 +173,6 @@ const AiGenerate = () => {
                 setAttachmentFile(repairedFile)
                 return
             }
-
             setAttachmentFile(file)
         } catch (error) {
             event.target.value = ''
@@ -223,36 +186,26 @@ const AiGenerate = () => {
         setErrorMessage('')
 
         localStorage.setItem('gemini_api_key', apiKey.trim())
-
         setStatus('generating')
 
         let questions = []
         try {
             const prompt = buildPrompt(
-                questionType,
                 topic,
-                count,
                 decodeURIComponent(chapterName),
-                numberOfRows,
-                numberOfDigits,
-                operations,
-                skillLevel,
                 attachmentFile
-                    ? `A file named "${attachmentFile.name}" is attached. Read it and use it as the primary question source when possible.`
+                    ? `A file named "${attachmentFile.name}" is attached. Read it and extract ALL questions from it.`
                     : ''
             )
 
-            const parts = await buildGeminiParts({
-                prompt,
-                attachmentFile
-            })
+            const parts = await buildGeminiParts({ prompt, attachmentFile })
 
             const response = await fetch(`${GEMINI_URL}?key=${apiKey.trim()}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     contents: [{ parts }],
-                    generationConfig: { temperature: 0.7, maxOutputTokens: 8192 }
+                    generationConfig: { temperature: 0.4, maxOutputTokens: 16384 }
                 })
             })
 
@@ -272,7 +225,11 @@ const AiGenerate = () => {
                 throw new Error('AI returned no questions. Try a more specific topic or a clearer file.')
             }
 
-            questions = questions.map(q => ({ ...q, type: questionType }))
+            // Preserve the AI-determined type per question; default to MCQ
+            questions = questions.map(q => ({
+                ...q,
+                type: q.type === 'Essay' ? 'Essay' : 'MCQ'
+            }))
         } catch (err) {
             setStatus('error')
             setErrorMessage(err.message || 'Failed to generate questions. Check your API key and try again.')
@@ -336,7 +293,7 @@ const AiGenerate = () => {
                     <div className="ai-spinner"></div>
                     {status === 'generating' && (
                         <>
-                            <p className="ai-progress-title text-color">Generating questions with AI...</p>
+                            <p className="ai-progress-title text-color">Reading file & generating questions with AI...</p>
                             <p className="ai-progress-sub">This may take a few seconds</p>
                         </>
                     )}
@@ -397,10 +354,10 @@ const AiGenerate = () => {
                 </div>
 
                 <div className="ai-field">
-                    <label className="ai-label">Topic / Description</label>
+                    <label className="ai-label">Topic / Extra Instructions (optional)</label>
                     <textarea
                         className="ai-textarea"
-                        placeholder="Describe the abacus worksheet you want and add any extra notes for the AI..."
+                        placeholder="Describe the SAT math topic or add any extra notes for the AI. Leave empty if attaching a file."
                         value={topic}
                         onChange={e => setTopic(e.target.value)}
                         rows={3}
@@ -419,9 +376,9 @@ const AiGenerate = () => {
                             accept={ACCEPTED_FILE_TYPES}
                             onChange={handleFileChange}
                         />
-                        <span className="ai-upload-title">Upload PDF, Word, or image</span>
+                        <span className="ai-upload-title">📎 Upload PDF, Word, or image</span>
                         <span className="ai-upload-subtitle">
-                            Supported: PDF, DOC, DOCX, PNG, JPG, JPEG, WEBP
+                            All questions in the file will be extracted with no limit — Supported: PDF, DOC, DOCX, PNG, JPG, JPEG, WEBP
                         </span>
                     </label>
                     {attachmentFile && (
@@ -436,109 +393,6 @@ const AiGenerate = () => {
                             </button>
                         </div>
                     )}
-                </div>
-
-                <div className="ai-field">
-                    <label className="ai-label">Question Type</label>
-                    <div className="ai-radio-group">
-                        <label className={`ai-radio-option ${questionType === 'MCQ' ? 'ai-radio-selected' : ''}`}>
-                            <input
-                                type="radio"
-                                name="questionType"
-                                value="MCQ"
-                                checked={questionType === 'MCQ'}
-                                onChange={() => setQuestionType('MCQ')}
-                            />
-                            MCQ (4 choices)
-                        </label>
-                        <label className={`ai-radio-option ${questionType === 'Essay' ? 'ai-radio-selected' : ''}`}>
-                            <input
-                                type="radio"
-                                name="questionType"
-                                value="Essay"
-                                checked={questionType === 'Essay'}
-                                onChange={() => setQuestionType('Essay')}
-                            />
-                            Essay (open-ended)
-                        </label>
-                    </div>
-                </div>
-
-                <div className="ai-field">
-                    <label className="ai-label">Number of Rows</label>
-                    <input
-                        type="number"
-                        className="ai-input ai-count-input"
-                        min={1}
-                        max={20}
-                        value={numberOfRows}
-                        onChange={e => setNumberOfRows(Number(e.target.value))}
-                    />
-                </div>
-
-                <div className="ai-field">
-                    <label className="ai-label">Number of Digits</label>
-                    <input
-                        type="number"
-                        className="ai-input ai-count-input"
-                        min={1}
-                        max={10}
-                        value={numberOfDigits}
-                        onChange={e => setNumberOfDigits(Number(e.target.value))}
-                    />
-                </div>
-
-                <div className="ai-field">
-                    <label className="ai-label">Operations</label>
-                    <div className="ai-checkbox-group">
-                        {[
-                            { value: '+', label: 'Addition (+)' },
-                            { value: '-', label: 'Subtraction (-)' },
-                            { value: 'x', label: 'Multiplication (x)' },
-                            { value: 'divide', label: 'Division (divide)' }
-                        ].map(operation => (
-                            <label
-                                key={operation.value}
-                                className={`ai-radio-option ${operations.includes(operation.value) ? 'ai-radio-selected' : ''}`}
-                            >
-                                <input
-                                    type="checkbox"
-                                    name="operations"
-                                    value={operation.value}
-                                    checked={operations.includes(operation.value)}
-                                    onChange={() => handleOperationChange(operation.value)}
-                                />
-                                {operation.label}
-                            </label>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="ai-field">
-                    <label className="ai-label">Abacus Skill / Level</label>
-                    <select
-                        className="ai-input"
-                        value={skillLevel}
-                        onChange={e => setSkillLevel(e.target.value)}
-                    >
-                        <option value="Basic (direct)">Basic (direct)</option>
-                        <option value="Friends of 5">Friends of 5</option>
-                        <option value="Friends of 10">Friends of 10</option>
-                        <option value="Friends of 5 and 10">Friends of 5 and 10</option>
-                        <option value="Other abacus skills">Other abacus skills</option>
-                    </select>
-                </div>
-
-                <div className="ai-field">
-                    <label className="ai-label">Number of Questions</label>
-                    <input
-                        type="number"
-                        className="ai-input ai-count-input"
-                        min={1}
-                        max={100}
-                        value={count}
-                        onChange={e => setCount(Number(e.target.value))}
-                    />
                 </div>
 
                 <div className="ai-actions d-flex">

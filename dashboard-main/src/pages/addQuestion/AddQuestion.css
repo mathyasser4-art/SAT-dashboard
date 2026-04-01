@@ -266,3 +266,60 @@ legend {
 .answer-toggel p{
     font-size: 18px !important;
 }
+
+/* ── Rich text question editor (ReactQuill + KaTeX) ─────────────── */
+.question-editor-wrapper {
+    margin: 1rem 0;
+    text-align: left;
+}
+
+.question-editor-wrapper .ql-toolbar.ql-snow {
+    border: 1px solid rgb(94, 93, 93);
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+    background-color: #f8f8ff;
+}
+
+.question-editor-wrapper .ql-container.ql-snow {
+    border: 1px solid rgb(94, 93, 93);
+    border-radius: 0 0 5px 5px;
+    font-size: 1rem;
+    font-family: inherit;
+    min-height: 110px;
+}
+
+.question-editor-wrapper .ql-editor {
+    min-height: 110px;
+    padding: 0.85rem 1rem;
+    line-height: 1.6;
+}
+
+.question-editor-wrapper .ql-editor.ql-blank::before {
+    color: #999;
+    font-style: normal;
+    font-size: 1rem;
+}
+
+/* Highlight formula button in toolbar */
+.question-editor-wrapper .ql-formula {
+    font-weight: 700;
+    color: rgb(56, 56, 238) !important;
+}
+
+.question-editor-wrapper .ql-toolbar .ql-formula::before {
+    content: '√';
+    font-size: 1.1rem;
+}
+
+/* Focus state */
+.question-editor-wrapper .ql-container.ql-snow:focus-within {
+    border-color: rgb(56, 56, 238);
+    box-shadow: 0 0 0 2px rgba(56, 56, 238, 0.12);
+}
+
+/* Rendered math inside editor */
+.question-editor-wrapper .ql-editor .ql-formula,
+.question-editor-wrapper .ql-editor .katex {
+    font-size: 1.1em;
+}
+

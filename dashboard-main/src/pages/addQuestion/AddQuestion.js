@@ -1,5 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import ReactQuill from 'react-quill';
+import katex from 'katex';
+import 'react-quill/dist/quill.snow.css';
+import 'katex/dist/katex.min.css';
 import addQuestion from '../../api/addQuestion.api'
 import addAnswerPic from '../../api/addAnswerPic.api'
 import addGraphQuestion from '../../api/addGraphQuestion.api';
@@ -7,6 +11,20 @@ import correctIcon from '../../correct-icon.png'
 import NumeralKeyboard from '../../components/NumeralKeyboard/NumeralKeyboard'
 import '../../reusable.css';
 import './AddQuestion.css'
+
+// Make katex available globally for Quill's formula module
+window.katex = katex;
+
+const quillModules = {
+    toolbar: [
+        ['bold', 'italic', 'underline'],
+        [{ script: 'sub' }, { script: 'super' }],
+        ['formula'],
+        ['clean'],
+    ],
+};
+
+const quillFormats = ['bold', 'italic', 'underline', 'script', 'formula'];
 
 const AddQuestion = () => {
     const [serverOperationError, setserverOperationError] = useState(null)
@@ -45,6 +63,8 @@ const AddQuestion = () => {
 
     const { chapterID, chapterName, questionTypeID, unitID, questionTypeName, subjectID, questionNum } = useParams()
     const navigate = useNavigate()
+
+    const isQuestionEmpty = (html) => html.replace(/<(.|\n)*?>/g, '').trim() === ''
 
     const selectQuestionPic = (e) => {
         setQuestionPic(e.target.files[0])
@@ -90,11 +110,11 @@ const AddQuestion = () => {
     }
 
     const removeAnswer = (item) => {
-        setAllAnswer(current => current.filter(e => e != item))
+        setAllAnswer(current => current.filter(e => e !== item))
     }
 
     const addNewQuestion = () => {
-        if (!question.trim() || questionPoint === '' || allAnswer.length === 0 && questionType === 'Essay Question'
+        if (isQuestionEmpty(question) || questionPoint === '' || allAnswer.length === 0 && questionType === 'Essay Question'
             || mcqAnswerFr === '' && questionType === 'MCQ Question' || mcqAnswerFs === '' && questionType === 'MCQ Question'
             || mcqAnswerSe === '' && questionType === 'MCQ Question' || mcqAnswerTh === '' && questionType === 'MCQ Question') {
             setserverOperationError('Enter the question data first!')
@@ -103,13 +123,13 @@ const AddQuestion = () => {
             if (questionPic)
                 data.append('image', questionPic)
             data.append('question', question)
-            if (questionType == 'Essay Question') {
-                allAnswer.map(item => {
+            if (questionType === 'Essay Question') {
+                allAnswer.forEach(item => {
                     data.append('answer', item)
                 })
             }
-            if (questionType == 'MCQ Question') {
-                if (correctAnswer == '') {
+            if (questionType === 'MCQ Question') {
+                if (correctAnswer === '') {
                     data.append('correctAnswer', mcqAnswerFs)
                 } else {
                     data.append('correctAnswer', correctAnswer)
@@ -121,9 +141,9 @@ const AddQuestion = () => {
             }
             if (autoCorrect)
                 data.append('autoCorrect', true)
-            if (questionType == 'MCQ Question') {
+            if (questionType === 'MCQ Question') {
                 data.append('typeOfAnswer', 'MCQ')
-            } else if (questionType == 'Graph Question') {
+            } else if (questionType === 'Graph Question') {
                 data.append('typeOfAnswer', 'Graph')
             }
             data.append('questionPoints', questionPoint)
@@ -223,7 +243,7 @@ const AddQuestion = () => {
     return (
         <div className="add-question">
             <div>
-                <p className='text-color head-title'>Add new question in <span>{(questionTypeName == 'Past Papers') ? 'exam' : 'chapter'}</span> (<span style={{ color: "rgb(56, 56, 238)" }}>{chapterName}</span>)</p>
+                <p className='text-color head-title'>Add new question in <span>{(questionTypeName === 'Past Papers') ? 'exam' : 'chapter'}</span> (<span style={{ color: "rgb(56, 56, 238)" }}>{chapterName}</span>)</p>
                 {(serverOperationError) ? <p className='text-error'>{serverOperationError}</p> : ''}
                 <fieldset>
                     <legend>Choose the type of question</legend>
@@ -254,14 +274,20 @@ const AddQuestion = () => {
                     </div>
                     <input className='select-input' type="file" name='images' onChange={selectQuestionPic} accept='.png, .jpg, .jpeg, .webp' />
                 </label>}
-                <textarea
-                    rows={4}
-                    placeholder="Type your question here"
-                    value={question}
-                    onChange={e => setQuestion(e.target.value)}
-                    style={{ boxSizing: 'border-box', outline: 'none', resize: 'vertical', fontFamily: 'inherit', fontSize: '1rem' }}
-                />
-                {(questionType == 'Essay Question') ? <>
+
+                {/* Rich text editor with math formula support */}
+                <div className="question-editor-wrapper">
+                    <ReactQuill
+                        theme="snow"
+                        value={question}
+                        onChange={setQuestion}
+                        modules={quillModules}
+                        formats={quillFormats}
+                        placeholder="Type your question here — use the formula button (√) to insert math expressions"
+                    />
+                </div>
+
+                {(questionType === 'Essay Question') ? <>
                     <div className="keyboard essay-answer">
                         <div className="essay-math-input">
                             <input
@@ -283,7 +309,7 @@ const AddQuestion = () => {
                         <li onClick={addAnswer}>+</li>
                     </div>
                     <div className='d-flex flex-wrap'>
-                        {(allAnswer.length != 0) ? allAnswer.map(item => {
+                        {(allAnswer.length !== 0) ? allAnswer.map(item => {
                             return (
                                 <div className='answer-item' key={item}>
                                     <p>{item}</p>
@@ -292,11 +318,11 @@ const AddQuestion = () => {
                             )
                         }) : ''}
                     </div>
-                </> : (questionType == "MCQ Question") ? <div className="keyboard mcq-answer d-flex">
+                </> : (questionType === "MCQ Question") ? <div className="keyboard mcq-answer d-flex">
 
                     <div className='mcq-input'>
                         <div className='d-flex align-items-center answer-toggel'>
-                            <input type="radio" id="berries_3" defaultChecked value={mcqAnswerFs} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                            <input type="radio" id="correct_1" defaultChecked value={mcqAnswerFs} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 1 (Correct answer)</p>
                         </div>
                         <input
@@ -317,7 +343,7 @@ const AddQuestion = () => {
                     </div>
                     <div className='mcq-input'>
                         <div className='d-flex align-items-center answer-toggel'>
-                            <input type="radio" id="berries_3" value={mcqAnswerSe} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                            <input type="radio" id="correct_2" value={mcqAnswerSe} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 2 (Correct answer)</p>
                         </div>
                         <input
@@ -338,7 +364,7 @@ const AddQuestion = () => {
                     </div>
                     <div className='mcq-input'>
                         <div className='d-flex align-items-center answer-toggel'>
-                            <input type="radio" id="berries_3" value={mcqAnswerTh} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                            <input type="radio" id="correct_3" value={mcqAnswerTh} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 3 (Correct answer)</p>
                         </div>
                         <input
@@ -359,7 +385,7 @@ const AddQuestion = () => {
                     </div>
                     <div className='mcq-input'>
                         <div className='d-flex align-items-center answer-toggel'>
-                            <input type="radio" id="berries_3" value={mcqAnswerFr} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                            <input type="radio" id="correct_4" value={mcqAnswerFr} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 4 (Correct answer)</p>
                         </div>
                         <input
@@ -388,7 +414,7 @@ const AddQuestion = () => {
                     <img src={correctIcon} alt="" />
                     <p>Question added success. you can add the graph answer pictures now.</p>
                 </div> : ''}
-                {(questionType == "Graph Question") ? <><div className="graph-container d-flex">
+                {(questionType === "Graph Question") ? <><div className="graph-container d-flex">
                     {(previewCorrectAP) ? <img src={previewCorrectAP} className="graph-preview graph-preview-fs" alt="" /> : <label className={`${(quesionGraphAdded) ? '' : 'answer-pic'} graph-img graph-img-fs`}>
                         <div>
                             <i className="fa fa-camera" aria-hidden="true"></i>
@@ -445,7 +471,7 @@ const AddQuestion = () => {
                     <p className='text-color'>Success</p>
                     <p className='text-color'>Congratulations, the full question has been successfully added.</p>
                     <button className='button' onClick={newQuestion}>Add another question</button>
-                    <Link to={`/chapter/${questionTypeName}/${chapterID}/${questionTypeID}/${unitID}/${subjectID}`}><button className='button cancel-button'>Redirect to <span>{(questionTypeName == 'Past Papers') ? 'exam' : 'chapter'}</span> page</button></Link>
+                    <Link to={`/chapter/${questionTypeName}/${chapterID}/${questionTypeID}/${unitID}/${subjectID}`}><button className='button cancel-button'>Redirect to <span>{(questionTypeName === 'Past Papers') ? 'exam' : 'chapter'}</span> page</button></Link>
                 </div>
             </div> : ''}
             {/* add question popup end */}

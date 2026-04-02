@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
+import { CKEditor } from 'ckeditor4-react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import ReactQuill from 'react-quill';
-import katex from 'katex';
-import 'react-quill/dist/quill.snow.css';
-import 'katex/dist/katex.min.css';
 import addQuestion from '../../api/addQuestion.api'
 import addAnswerPic from '../../api/addAnswerPic.api'
 import addGraphQuestion from '../../api/addGraphQuestion.api';
@@ -11,20 +8,6 @@ import correctIcon from '../../correct-icon.png'
 import NumeralKeyboard from '../../components/NumeralKeyboard/NumeralKeyboard'
 import '../../reusable.css';
 import './AddQuestion.css'
-
-// Make katex available globally for Quill's formula module
-window.katex = katex;
-
-const quillModules = {
-    toolbar: [
-        ['bold', 'italic', 'underline'],
-        [{ script: 'sub' }, { script: 'super' }],
-        ['formula'],
-        ['clean'],
-    ],
-};
-
-const quillFormats = ['bold', 'italic', 'underline', 'script', 'formula'];
 
 const AddQuestion = () => {
     const [serverOperationError, setserverOperationError] = useState(null)
@@ -275,15 +258,16 @@ const AddQuestion = () => {
                     <input className='select-input' type="file" name='images' onChange={selectQuestionPic} accept='.png, .jpg, .jpeg, .webp' />
                 </label>}
 
-                {/* Rich text editor with math formula support */}
                 <div className="question-editor-wrapper">
-                    <ReactQuill
-                        theme="snow"
-                        value={question}
-                        onChange={setQuestion}
-                        modules={quillModules}
-                        formats={quillFormats}
-                        placeholder="Type your question here — use the formula button (√) to insert math expressions"
+                    <CKEditor
+                        initData={question}
+                        config={{
+                            extraPlugins: 'mathjax',
+                            mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
+                            height: 200,
+                            removeButtons: 'PasteFromWord'
+                        }}
+                        onChange={(event) => setQuestion(event.editor.getData())}
                     />
                 </div>
 

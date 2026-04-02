@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
+import { CKEditor } from 'ckeditor4-react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import addQuestion from '../../api/addQuestion.api'
 import addAnswerPic from '../../api/addAnswerPic.api'
@@ -254,13 +255,18 @@ const AddQuestion = () => {
                     </div>
                     <input className='select-input' type="file" name='images' onChange={selectQuestionPic} accept='.png, .jpg, .jpeg, .webp' />
                 </label>}
-                <textarea
-                    rows={4}
-                    placeholder="Type your question here"
-                    value={question}
-                    onChange={e => setQuestion(e.target.value)}
-                    style={{ boxSizing: 'border-box', outline: 'none', resize: 'vertical', fontFamily: 'inherit', fontSize: '1rem' }}
-                />
+                <div style={{ marginBottom: '20px' }}>
+                    <CKEditor
+                        initData={question}
+                        config={{
+                            extraPlugins: 'mathjax',
+                            mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
+                            height: 200,
+                            removeButtons: 'PasteFromWord'
+                        }}
+                        onChange={(event) => setQuestion(event.editor.getData())}
+                    />
+                </div>
                 {(questionType == 'Essay Question') ? <>
                     <div className="keyboard essay-answer">
                         <div className="essay-math-input">

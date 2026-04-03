@@ -1,23 +1,26 @@
 const URL = 'https://sat-backend-production.up.railway.app/question/updateQuestion/'
 
 const updateQuestion = (data, questionID, setserverOperationError, setServerOperationLoading, setQuesionAdded) => {
-    const Token = localStorage.getItem('O_authDB')
+
+    const headers = {
+        'Content-Type': 'application/json'
+    }
+
     setServerOperationLoading(true)
     fetch(`${URL}${questionID}`, {
         method: 'PUT',
-        headers: {
-            'authorization': `pracYas09${Token}`
-        }, 
+        headers,
         body: data
     })
-        .then((response) => response.json())
-        .then((responseJson) => {
-            if (responseJson.message === 'success') {
+        .then(async (response) => {
+            const responseJson = await response.json()
+
+            if (response.ok && (responseJson.message === 'success' || responseJson.updatedQuestion || responseJson.question)) {
                 setQuesionAdded(true)
                 setServerOperationLoading(false)
                 setserverOperationError(null)
             } else {
-                setserverOperationError(responseJson.message)
+                setserverOperationError(responseJson.message || 'Failed to update the question.')
                 setServerOperationLoading(false)
             }
         })

@@ -1,13 +1,10 @@
 const URL = 'https://sat-backend-production.up.railway.app/question/addQuestion';
 
 const addQuestion = (data, setserverOperationError, setServerOperationLoading, setQuestionAdded, setQuestionID, questionType, setQuestionGraphAdded) => {
-    const Token = localStorage.getItem('O_authDB')
+
     setServerOperationLoading(true);
     fetch(`${URL}`, {
         method: 'POST',
-        headers: {
-            'authorization': `pracYas09${Token}`
-        },
         body: data
     })
     .then((response) => response.json())

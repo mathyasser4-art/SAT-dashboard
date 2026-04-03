@@ -1,13 +1,12 @@
 const URL = 'https://sat-backend-production.up.railway.app/unit/deleteUnit/'
 
 const deleteUnit = (questionTypeID, unitID, subjectID, setserverOperationError, setServerOperationLoading, setAllUnit) => {
-    const Token = localStorage.getItem('O_authDB')
+
     setServerOperationLoading(true)
     fetch(`${URL}${questionTypeID}/${unitID}/${subjectID}`, {
         method: 'DELETE',
         headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
+            'Content-Type': 'application/json'
         },
     })
         .then((response) => response.json())

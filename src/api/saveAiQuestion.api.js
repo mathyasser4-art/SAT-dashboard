@@ -7,7 +7,7 @@ const BASE_URL = 'https://sat-backend-production.up.railway.app/question/addQues
  * @param {string} chapterID - The chapter to add the question to
  */
 const saveAiQuestion = (questionData, chapterID) => {
-    const Token = localStorage.getItem('O_authDB')
+
     const data = new FormData()
 
     // Wrap question text in <p> to match Quill HTML format
@@ -33,7 +33,6 @@ const saveAiQuestion = (questionData, chapterID) => {
     return fetch(BASE_URL, {
         method: 'POST',
         headers: {
-            'authorization': `pracYas09${Token}`
         },
         body: data
     }).then(res => res.json())

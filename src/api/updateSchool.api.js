@@ -1,13 +1,11 @@
 const URL = 'https://sat-backend-production.up.railway.app/school/updateSchool'
 
 const updateSchool = (data, schoolID, setserverOperationError, setServerOperationLoading, setAllSchools) => {
-    const Token = localStorage.getItem('O_authDB')
     setServerOperationLoading(true)
     fetch(`${URL}/${schoolID}`, {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
     })

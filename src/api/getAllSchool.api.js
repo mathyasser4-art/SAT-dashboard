@@ -1,13 +1,12 @@
 const URL = 'https://sat-backend-production.up.railway.app/school/getSchool'
 
 const getAllSchool = (setAllSchools, setLoading) => {
-    const Token = localStorage.getItem('O_authDB')
+
     setLoading(true)
     fetch(`${URL}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
+            'Content-Type': 'application/json'
         },
     })
         .then((response) => response.json())

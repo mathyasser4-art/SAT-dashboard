@@ -15,19 +15,15 @@ const getQuestionDetails = (questionID, setQuestionDetails, setLoading, setQuest
                 setQuestionPoint(responseJson.question.questionPoints)
                 setQuestionType(responseJson.question.typeOfAnswer)
                 if (responseJson.question.typeOfAnswer == 'MCQ') {
-                    const wrongAnswers = responseJson.question.wrongAnswer
-                    for (let index = 0; index < wrongAnswers.length; index++) {
-                        const element = wrongAnswers[index];
-                        if (index == 0) {
-                            setMcqAnswerFs(element)
-                        } else if (index == 1) {
-                            setMcqAnswerSe(element)
-                        } else if (index == 2) {
-                            setMcqAnswerTh(element)
-                        } else {
-                            setMcqAnswerFr(element)
-                        }
-                    }
+                    const allMcqAnswers = [
+                        responseJson.question.correctAnswer,
+                        ...(responseJson.question.wrongAnswer || [])
+                    ].filter(Boolean)
+
+                    setMcqAnswerFs(allMcqAnswers[0] || '')
+                    setMcqAnswerSe(allMcqAnswers[1] || '')
+                    setMcqAnswerTh(allMcqAnswers[2] || '')
+                    setMcqAnswerFr(allMcqAnswers[3] || '')
                 }
                 setLoading(false)
             } else {

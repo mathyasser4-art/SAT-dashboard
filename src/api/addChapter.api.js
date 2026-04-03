@@ -1,13 +1,12 @@
 const URL = 'https://sat-backend-production.up.railway.app/chapter/addChapter'
 
 const addChapter = (data, questionTypeID, subjectID, setserverOperationError, setServerOperationLoading, setAllUnit) => {
-    const Token = localStorage.getItem('O_authDB')
+
     setServerOperationLoading(true)
     fetch(`${URL}/${questionTypeID}/${subjectID}`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
     })

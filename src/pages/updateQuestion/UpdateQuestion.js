@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { CKEditor } from 'ckeditor4-react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import NumeralKeyboard from '../../components/NumeralKeyboard/NumeralKeyboard';
 import getQuestionDetails from '../../api/getQuestionDetails.api'
@@ -8,19 +9,6 @@ import updateAutoCorrect from '../../api/updateAutoCorrect.api'
 import correctIcon from '../../correct-icon.png'
 import '../../reusable.css'
 import './UpdateQuestion.css'
-
-const stripHtml = (html) => {
-    if (!html) return ''
-    return html
-        .replace(/<br\s*\/?>/gi, '\n')
-        .replace(/<\/p>/gi, '\n')
-        .replace(/<[^>]+>/g, '')
-        .replace(/&nbsp;/g, ' ')
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .trim()
-}
 
 const UpdateQuestion = () => {
     const [serverOperationError, setserverOperationError] = useState(null)
@@ -47,22 +35,12 @@ const UpdateQuestion = () => {
     const [correctAnswer, setCorrectAnswer] = useState('')
     const [activeAnswerField, setActiveAnswerField] = useState(null)
 
-    const questionStripped = useRef(false)
-
     const { questionID, questionTypeID, unitID, questionTypeName, subjectID } = useParams()
     const navigate = useNavigate()
 
     useEffect(() => {
         getQuestion()
     }, []);
-
-    // Strip HTML tags from question loaded from backend once on load
-    useEffect(() => {
-        if (!loading && question && !questionStripped.current) {
-            setQuestion(stripHtml(question))
-            questionStripped.current = true
-        }
-    }, [loading, question])
 
     const getQuestion = async () => {
         await getQuestionDetails(questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr)
@@ -195,13 +173,18 @@ const UpdateQuestion = () => {
                     <p>This question is {questionDetails.autoCorrect ? 'Auto Correct' : 'Not Auto Correct'}</p>
                     {autoCorrectLoading ? <p>Waiting...</p> : <p onClick={handleUpadteAutoCorrect}>(Chanage it to {questionDetails.autoCorrect ? 'Not Auto Correct' : 'Auto Correct'})</p>}
                 </div>
-                <textarea
-                    rows={4}
-                    placeholder="Type your question here"
-                    value={question}
-                    onChange={e => setQuestion(e.target.value)}
-                    style={{ boxSizing: 'border-box', outline: 'none', resize: 'vertical', fontFamily: 'inherit', fontSize: '1rem' }}
-                />
+                <div style={{ marginBottom: '20px' }}>
+                    <CKEditor
+                        initData={question}
+                        config={{
+                            extraPlugins: 'mathjax',
+                            mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
+                            height: 200,
+                            removeButtons: 'PasteFromWord'
+                        }}
+                        onChange={(event) => setQuestion(event.editor.getData())}
+                    />
+                </div>
                 {(questionType == 'Essay') ? <div className="keyboard essay-answer">
                     <div className="essay-math-input">
                         <input

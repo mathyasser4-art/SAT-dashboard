@@ -5,6 +5,8 @@ import addSystem from '../../api/addSystem.api';
 import getSystem from '../../api/getSystem.api';
 import updateSystem from '../../api/updateSystem.api'
 import updateSubject from '../../api/updateSubject.api';
+import deleteSubject from '../../api/deleteSubject.api';
+import deleteSystem from '../../api/deleteSystem.api';
 import '../../reusable.css'
 import './Subject.css'
 
@@ -115,6 +117,38 @@ function Subject() {
     }
     // update system func end    
 
+    // delete subject func start  
+    const openDeleteSubPopup = (subjectID) => {
+        setSubjectID(subjectID)
+        setserverOperationError(null)
+        document.querySelector('.delete-subject-popup').classList.replace('d-none', 'd-flex');
+    }
+
+    const closeDeleteSubPopup = () => {
+        document.querySelector('.delete-subject-popup').classList.replace('d-flex', 'd-none');
+    }
+
+    const handleDeleteSubject = () => {
+        deleteSubject(subjectID, setserverOperationError, setServerOperationLoading, setAllSystem)
+    }
+    // delete subject func end  
+
+    // delete system func start  
+    const openDeleteSysPopup = (systemID) => {
+        setSystemID(systemID)
+        setserverOperationError(null)
+        document.querySelector('.delete-system-popup').classList.replace('d-none', 'd-flex');
+    }
+
+    const closeDeleteSysPopup = () => {
+        document.querySelector('.delete-system-popup').classList.replace('d-flex', 'd-none');
+    }
+
+    const handleDeleteSystem = () => {
+        deleteSystem(systemID, setserverOperationError, setServerOperationLoading, setAllSystem)
+    }
+    // delete system func end  
+
     if (loading) return (<div className='loading-container'><div className='d-flex justify-content-center'><span className="page-loader"></span></div></div>)
 
     return (
@@ -132,13 +166,17 @@ function Subject() {
                                 <div className='system-icon'>
                                     <i onClick={() => openAddSubPopup(item._id)} className="fa fa-plus" aria-hidden="true"></i>
                                     <i onClick={() => openUpdateSysPopup(item.systemName, item._id)} className="fa fa-pencil" aria-hidden="true"></i>
+                                    <i onClick={() => openDeleteSysPopup(item._id)} className="fa fa-trash-o" aria-hidden="true"></i>
                                 </div>
                             </div>
                             {item.subjects?.map(subItem => {
                                 return (
                                     <div className='subject-cover d-flex justify-content-space-between align-items-center'>
                                         <Link key={subItem._id} to={`/unit/${questionTypeName}/${questionTypeID}/${subItem._id}`}><p className='subject-name'>{subItem.subjectName}</p></Link>
-                                        <i onClick={() => openUpdateSubPopup(subItem.subjectName, subItem._id)} className="fa fa-pencil" aria-hidden="true"></i>
+                                        <div>
+                                            <i onClick={() => openUpdateSubPopup(subItem.subjectName, subItem._id)} className="fa fa-pencil" aria-hidden="true"></i>
+                                            <i onClick={() => openDeleteSubPopup(subItem._id)} className="fa fa-trash-o" aria-hidden="true"></i>
+                                        </div>
                                     </div>
                                 )
                             })}
@@ -201,6 +239,30 @@ function Subject() {
                 </div>
             </div>
             {/* update system popup end */}
+
+            {/* delete subject popup start */}
+            <div className="delete-subject-popup subject-popup d-none justify-content-center align-items-center">
+                <div>
+                    <p className='text-color'>Delete Subject</p>
+                    <p>Are you sure you want to delete this subject?</p>
+                    {(serverOperationError) ? <p className='text-error'>{serverOperationError}</p> : ''}
+                    <button className='button' onClick={handleDeleteSubject}>{(serverOperationLoading) ? <span className="button-loader"></span> : 'Delete'}</button>
+                    <button className='button' onClick={closeDeleteSubPopup}>Cancel</button>
+                </div>
+            </div>
+            {/* delete subject popup end */}
+
+            {/* delete system popup start */}
+            <div className="delete-system-popup subject-popup d-none justify-content-center align-items-center">
+                <div>
+                    <p className='text-color'>Delete System</p>
+                    <p>Are you sure you want to delete this system?</p>
+                    {(serverOperationError) ? <p className='text-error'>{serverOperationError}</p> : ''}
+                    <button className='button' onClick={handleDeleteSystem}>{(serverOperationLoading) ? <span className="button-loader"></span> : 'Delete'}</button>
+                    <button className='button' onClick={closeDeleteSysPopup}>Cancel</button>
+                </div>
+            </div>
+            {/* delete system popup end */}
         </div>
     )
 }

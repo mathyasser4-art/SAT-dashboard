@@ -1,13 +1,12 @@
 const URL = 'https://sat-backend-production.up.railway.app/school/deleteSchool';
 
 const deleteSchool = (schoolID, setserverOperationError, setServerOperationLoading, setAllSchools) => {
-    const Token = localStorage.getItem('O_authDB')
+
     setServerOperationLoading(true);
     fetch(`${URL}/${schoolID}`, {
         method: 'DELETE',
         headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
+            'Content-Type': 'application/json'
         },
     })
     .then((response) => response.json())

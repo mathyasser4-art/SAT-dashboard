@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import RichTextEditor from '../../../components/RichTextEditor/RichTextEditor'
+import RichTextEditor from '../../components/RichTextEditor/RichTextEditor'
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import addQuestion from '../../api/addQuestion.api'
 import addAnswerPic from '../../api/addAnswerPic.api'

@@ -4,23 +4,15 @@ import logo from '../../logo.png'
 import '../../reusable.css'
 import './Navbar.css'
 
-const Navbar = ({ isAuth }) => {
-
-    const logOut = () => {
-        localStorage.removeItem('O_authDB')
-        window.location.reload();
-    }
-
-    if (!isAuth) return null;
+const Navbar = () => {
 
     return (
         <nav>
             <div className='nav-container d-flex justify-content-space-between align-items-center'>
                 <Link to={'/questionType'}><img src={logo} alt="" /></Link>
                 <div className='d-flex align-items-center school'>
-                    <Link to={'/users'}><i class="fa fa-user" aria-hidden="true"></i></Link>
-                    <Link to={'/school'}><i class="fa fa-graduation-cap" aria-hidden="true"></i></Link>
-                    <p className='button' onClick={logOut}>logOut</p>
+                    <Link to={'/users'}><i className="fa fa-user" aria-hidden="true"></i></Link>
+                    <Link to={'/school'}><i className="fa fa-graduation-cap" aria-hidden="true"></i></Link>
                 </div>
             </div>
         </nav>

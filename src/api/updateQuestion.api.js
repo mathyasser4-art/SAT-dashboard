@@ -2,14 +2,9 @@ const URL = 'https://sat-backend-production.up.railway.app/question/updateQuesti
 
 const updateQuestion = (data, questionID, setserverOperationError, setServerOperationLoading, setQuesionAdded) => {
 
-    const headers = {
-        'Content-Type': 'application/json'
-    }
-
     setServerOperationLoading(true)
     fetch(`${URL}${questionID}`, {
         method: 'PUT',
-        headers,
         body: data
     })
         .then(async (response) => {

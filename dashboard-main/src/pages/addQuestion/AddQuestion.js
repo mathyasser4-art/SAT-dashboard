@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CKEditor } from 'ckeditor4-react';
+import RichTextEditor from '../../../components/RichTextEditor/RichTextEditor'
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import addQuestion from '../../api/addQuestion.api'
 import addAnswerPic from '../../api/addAnswerPic.api'
@@ -259,15 +259,10 @@ const AddQuestion = () => {
                 </label>}
 
                 <div className="question-editor-wrapper">
-                    <CKEditor
-                        initData={question}
-                        config={{
-                            extraPlugins: 'mathjax',
-                            mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
-                            height: 200,
-                            removeButtons: 'PasteFromWord'
-                        }}
-                        onChange={(event) => setQuestion(event.editor.getData())}
+                    <RichTextEditor
+                        value={question}
+                        onChange={setQuestion}
+                        placeholder="Type your question here. Click Σ to insert a math formula visually."
                     />
                 </div>
 

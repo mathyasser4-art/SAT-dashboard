@@ -15,7 +15,6 @@
     "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",
     "react-quill": "^2.0.0",
-    "ckeditor4-react": "^1.4.0",
     "katex": "^0.16.9",
     "jquery": "^3.7.1",
     "mathquill": "^0.10.1",

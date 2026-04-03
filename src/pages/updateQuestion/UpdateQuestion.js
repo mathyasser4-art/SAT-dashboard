@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CKEditor } from 'ckeditor4-react';
+import RichTextEditor from '../../components/RichTextEditor/RichTextEditor'
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import NumeralKeyboard from '../../components/NumeralKeyboard/NumeralKeyboard';
 import getQuestionDetails from '../../api/getQuestionDetails.api'
@@ -174,15 +174,10 @@ const UpdateQuestion = () => {
                     {autoCorrectLoading ? <p>Waiting...</p> : <p onClick={handleUpadteAutoCorrect}>(Chanage it to {questionDetails.autoCorrect ? 'Not Auto Correct' : 'Auto Correct'})</p>}
                 </div>
                 <div style={{ marginBottom: '20px' }}>
-                    <CKEditor
-                        initData={question}
-                        config={{
-                            extraPlugins: 'mathjax',
-                            mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML',
-                            height: 200,
-                            removeButtons: 'PasteFromWord'
-                        }}
-                        onChange={(event) => setQuestion(event.editor.getData())}
+                    <RichTextEditor
+                        value={question}
+                        onChange={setQuestion}
+                        placeholder="Type your question here. Click Σ to insert a math formula visually."
                     />
                 </div>
                 {(questionType == 'Essay') ? <div className="keyboard essay-answer">

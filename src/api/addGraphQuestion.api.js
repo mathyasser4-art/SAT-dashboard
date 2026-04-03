@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/question/addGraphQuestion';
+const URL = '/api/question/addGraphQuestion';
 
 const addGraphQuestion = (data, setserverOperationError, setServerOperationLoading, setQuestionAdded, setQuestionID) => {
 

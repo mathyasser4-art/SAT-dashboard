@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/chapter/deleteChapter';
+const URL = '/api/chapter/deleteChapter';
 
 const deleteChapter = (chapterID, setserverOperationError, setServerOperationLoading, navigate, questionTypeID, unitID, questionTypeName, subjectID) => {
 

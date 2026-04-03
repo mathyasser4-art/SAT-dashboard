@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/school/updateSchool'
+const URL = '/api/school/updateSchool'
 
 const updateSchool = (data, schoolID, setserverOperationError, setServerOperationLoading, setAllSchools) => {
     setServerOperationLoading(true)

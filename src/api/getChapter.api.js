@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/chapter/getChapterQuestion/'
+const URL = '/api/chapter/getChapterQuestion/'
 
 const getChapter = (chapterID, setChapterDetails, setLoading) => {
     setLoading(true)

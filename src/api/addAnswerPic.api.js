@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/answer/uploadPic'
+const URL = '/api/answer/uploadPic'
 
 const addAnswerPic = (data, setserverOperationError, setServerOperationLoading, setPicSaved) => {
 

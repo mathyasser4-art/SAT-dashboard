@@ -1,4 +1,4 @@
-const URL = 'http://localhost:8000/subject/updateSubject'
+const URL = '/api/subject/updateSubject'
 
 const updateSubject = (data, subjectID, setserverOperationError, setServerOperationLoading, setAllSystem) => {
     setServerOperationLoading(true)

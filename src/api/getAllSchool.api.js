@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/school/getSchool'
+const URL = '/api/school/getSchool'
 
 const getAllSchool = (setAllSchools, setLoading) => {
 

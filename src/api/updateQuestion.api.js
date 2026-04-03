@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/question/updateQuestion/'
+const URL = '/api/question/updateQuestion/'
 
 const updateQuestion = (data, questionID, setserverOperationError, setServerOperationLoading, setQuesionAdded) => {
 

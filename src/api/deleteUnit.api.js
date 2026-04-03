@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/unit/deleteUnit/'
+const URL = '/api/unit/deleteUnit/'
 
 const deleteUnit = (questionTypeID, unitID, subjectID, setserverOperationError, setServerOperationLoading, setAllUnit) => {
 

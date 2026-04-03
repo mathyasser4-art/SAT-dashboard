@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/user/get'
+const URL = '/api/user/get'
 
 const getUsers = (pageNumber, setLoading, setAllClients, setPageNumber, setTotalPage) => {
 

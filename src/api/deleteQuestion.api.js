@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/question/deleteQuestion/'
+const URL = '/api/question/deleteQuestion/'
 
 const deleteQuestion = (questionID, chapterID, setserverOperationError, setServerOperationLoading, setChapterDetails) => {
 

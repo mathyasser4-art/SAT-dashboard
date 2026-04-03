@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/school/disableSchool'
+const URL = '/api/school/disableSchool'
 
 const disableSchool = (schoolID, setAllSchools) => {
 

@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/chapter/updateChapter/'
+const URL = '/api/chapter/updateChapter/'
 
 const updateChapter = (data, chapterID, setserverOperationError, setServerOperationLoading, setChapterDetails) => {
 

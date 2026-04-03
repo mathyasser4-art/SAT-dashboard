@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/school/deleteSchool';
+const URL = '/api/school/deleteSchool';
 
 const deleteSchool = (schoolID, setserverOperationError, setServerOperationLoading, setAllSchools) => {
 

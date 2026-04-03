@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/question/updateAutoCorrect/'
+const URL = '/api/question/updateAutoCorrect/'
 
 const updateAutoCorrect = (questionID, setserverOperationError, setAutoCorrectLoading, setQuestionDetails) => {
 

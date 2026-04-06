@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import RichTextEditor from '../../components/RichTextEditor/RichTextEditor';
 import NumeralKeyboard from '../../components/NumeralKeyboard/NumeralKeyboard';
 import getQuestionDetails from '../../api/getQuestionDetails.api'
 import updateQuestion from '../../api/updateQuestion.api'
@@ -8,19 +9,6 @@ import updateAutoCorrect from '../../api/updateAutoCorrect.api'
 import correctIcon from '../../correct-icon.png'
 import '../../reusable.css'
 import './UpdateQuestion.css'
-
-const stripHtml = (html) => {
-    if (!html) return ''
-    return html
-        .replace(/<br\s*\/?>/gi, '\n')
-        .replace(/<\/p>/gi, '\n')
-        .replace(/<[^>]+>/g, '')
-        .replace(/&nbsp;/g, ' ')
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .trim()
-}
 
 const UpdateQuestion = () => {
     const [serverOperationError, setserverOperationError] = useState(null)
@@ -47,22 +35,12 @@ const UpdateQuestion = () => {
     const [correctAnswer, setCorrectAnswer] = useState('')
     const [activeAnswerField, setActiveAnswerField] = useState(null)
 
-    const questionStripped = useRef(false)
-
     const { questionID, questionTypeID, unitID, questionTypeName, subjectID } = useParams()
     const navigate = useNavigate()
 
     useEffect(() => {
         getQuestion()
-    }, []);
-
-    // Strip HTML tags from question loaded from backend once on load
-    useEffect(() => {
-        if (!loading && question && !questionStripped.current) {
-            setQuestion(stripHtml(question))
-            questionStripped.current = true
-        }
-    }, [loading, question])
+    }, [])
 
     const getQuestion = async () => {
         await getQuestionDetails(questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr)
@@ -195,13 +173,13 @@ const UpdateQuestion = () => {
                     <p>This question is {questionDetails.autoCorrect ? 'Auto Correct' : 'Not Auto Correct'}</p>
                     {autoCorrectLoading ? <p>Waiting...</p> : <p onClick={handleUpadteAutoCorrect}>(Chanage it to {questionDetails.autoCorrect ? 'Not Auto Correct' : 'Auto Correct'})</p>}
                 </div>
-                <textarea
-                    rows={4}
-                    placeholder="Type your question here"
-                    value={question}
-                    onChange={e => setQuestion(e.target.value)}
-                    style={{ boxSizing: 'border-box', outline: 'none', resize: 'vertical', fontFamily: 'inherit', fontSize: '1rem' }}
-                />
+                <div className="question-editor-wrapper">
+                    <RichTextEditor
+                        value={question}
+                        onChange={setQuestion}
+                        placeholder="Type your question here. Click Σ to insert a math formula visually."
+                    />
+                </div>
                 {(questionType == 'Essay') ? <div className="keyboard essay-answer">
                     <div className="essay-math-input">
                         <input
@@ -224,7 +202,7 @@ const UpdateQuestion = () => {
                 </div> : (questionType == 'MCQ') ? <div className="keyboard mcq-answer d-flex"> 
                         <div className='mcq-input'>
                             <div className='d-flex align-items-center answer-toggel'>
-                                <input type="radio" id="berries_3" defaultChecked value={mcqAnswerFs} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                                <input type="radio" id="correct_1" defaultChecked value={mcqAnswerFs} name="correct-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                                 <p>Answer 1 (Correct answer)</p>
                             </div>
                             <input
@@ -234,10 +212,18 @@ const UpdateQuestion = () => {
                                 onFocus={() => setActiveAnswerField('mcq-1')}
                                 onChange={e => setMcqAnswerFs(e.target.value)}
                             />
+                            {activeAnswerField === 'mcq-1' ? (
+                                <NumeralKeyboard
+                                    onInsert={insertNumeral}
+                                    onBackspace={backspaceNumeral}
+                                    onSpace={insertSpace}
+                                    onClose={() => setActiveAnswerField(null)}
+                                />
+                            ) : ''}
                         </div>
                         <div className='mcq-input'>
                             <div className='d-flex align-items-center answer-toggel'>
-                                <input type="radio" id="berries_3" value={mcqAnswerSe} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                                <input type="radio" id="correct_2" value={mcqAnswerSe} name="correct-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                                 <p>Answer 2 (Correct answer)</p>
                             </div>
                             <input
@@ -247,10 +233,18 @@ const UpdateQuestion = () => {
                                 onFocus={() => setActiveAnswerField('mcq-2')}
                                 onChange={e => setMcqAnswerSe(e.target.value)}
                             />
+                            {activeAnswerField === 'mcq-2' ? (
+                                <NumeralKeyboard
+                                    onInsert={insertNumeral}
+                                    onBackspace={backspaceNumeral}
+                                    onSpace={insertSpace}
+                                    onClose={() => setActiveAnswerField(null)}
+                                />
+                            ) : ''}
                         </div>
                         <div className='mcq-input'>
                             <div className='d-flex align-items-center answer-toggel'>
-                                <input type="radio" id="berries_3" value={mcqAnswerTh} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                                <input type="radio" id="correct_3" value={mcqAnswerTh} name="correct-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                                 <p>Answer 3 (Correct answer)</p>
                             </div>
                             <input
@@ -260,10 +254,18 @@ const UpdateQuestion = () => {
                                 onFocus={() => setActiveAnswerField('mcq-3')}
                                 onChange={e => setMcqAnswerTh(e.target.value)}
                             />
+                            {activeAnswerField === 'mcq-3' ? (
+                                <NumeralKeyboard
+                                    onInsert={insertNumeral}
+                                    onBackspace={backspaceNumeral}
+                                    onSpace={insertSpace}
+                                    onClose={() => setActiveAnswerField(null)}
+                                />
+                            ) : ''}
                         </div>
                         <div className='mcq-input'>
                             <div className='d-flex align-items-center answer-toggel'>
-                                <input type="radio" id="berries_3" value={mcqAnswerFr} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                                <input type="radio" id="correct_4" value={mcqAnswerFr} name="correct-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                                 <p>Answer 4 (Correct answer)</p>
                             </div>
                             <input
@@ -273,7 +275,7 @@ const UpdateQuestion = () => {
                                 onFocus={() => setActiveAnswerField('mcq-4')}
                                 onChange={e => setMcqAnswerFr(e.target.value)}
                             />
-                            {['mcq-1', 'mcq-2', 'mcq-3', 'mcq-4'].includes(activeAnswerField) ? (
+                            {activeAnswerField === 'mcq-4' ? (
                                 <NumeralKeyboard
                                     onInsert={insertNumeral}
                                     onBackspace={backspaceNumeral}

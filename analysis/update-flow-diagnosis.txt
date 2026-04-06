@@ -1,0 +1,39 @@
+Reviewed files:
+- SAT-dashboard-master/dashboard-main/src/pages/updateQuestion/UpdateQuestion.js
+- SAT-dashboard-master/dashboard-main/src/api/getQuestionDetails.api.js
+- SAT-dashboard-master/dashboard-main/src/api/updateQuestion.api.js
+- SAT-dashboard-master/dashboard-main/src/pages/addQuestion/AddQuestion.js
+
+Concise diagnosis:
+1. Editor mismatch is the biggest functional inconsistency.
+- Add flow uses CKEditor 4 (ckeditor4-react) and stores HTML.
+- Update flow uses a plain textarea.
+- Update flow also strips HTML from loaded question content via stripHtml(...) before editing.
+- This means questions created with CKEditor/rich text/math markup are converted to plain text on update, so formatting/math content can be lost or corrupted after saving.
+
+2. Likely auth break after username/password removal.
+- updateQuestion.api.js still depends on localStorage.getItem('O_authDB') and sends:
+  authorization: pracYas09${Token}
+- If the login/auth flow changed when username/password was removed, this token key/header format may no longer match backend expectations, causing update requests to fail.
+
+3. Success handling is tightly coupled to one backend message.
+- updateQuestion.api.js only treats success when responseJson.message === 'success'.
+- If the backend now returns a different success string, the UI will incorrectly surface an error even if the update succeeded.
+
+4. MCQ answer hydration is suspicious.
+- getQuestionDetails.api.js populates the four MCQ inputs only from responseJson.question.wrongAnswer.
+- UpdateQuestion.js then sends one correctAnswer plus all four inputs again as wrongAnswer.
+- If backend wrongAnswer is meant to contain only incorrect options, update prefill/submission may be using the wrong shape.
+
+5. Update payload is less complete than add payload.
+- Add flow sends fields like typeOfAnswer, chapter, index, and optionally autoCorrect.
+- Update flow sends only question, answers, questionPoints, and optional image.
+- If backend update expects more of the create shape, update may be incomplete.
+
+Files most likely needing changes:
+- SAT-dashboard-master/dashboard-main/src/pages/updateQuestion/UpdateQuestion.js
+- SAT-dashboard-master/dashboard-main/src/api/updateQuestion.api.js
+- SAT-dashboard-master/dashboard-main/src/api/getQuestionDetails.api.js
+
+Reference file compared:
+- SAT-dashboard-master/dashboard-main/src/pages/addQuestion/AddQuestion.js

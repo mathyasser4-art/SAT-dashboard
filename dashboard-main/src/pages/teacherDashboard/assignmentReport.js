@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
-const assignmentReportApiUrl = 'http://localhost:8000/assignment';
+const assignmentReportApiUrl = 'https://sat-backend-production.up.railway.app/assignment';
 
 function AssignmentReport() {
   const { assignmentID } = useParams();
@@ -99,4 +99,3 @@ function AssignmentReport() {
 }
 
 export default AssignmentReport;
-  

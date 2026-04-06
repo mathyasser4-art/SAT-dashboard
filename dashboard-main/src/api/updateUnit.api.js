@@ -1,4 +1,4 @@
-const URL = 'http://localhost:8000/unit/updateUnit'
+const URL = 'https://sat-backend-production.up.railway.app/unit/updateUnit'
 const Token = localStorage.getItem('O_authDB')
 
 const updateUnit = (data, questionTypeID, unitID, subjectID, setserverOperationError, setServerOperationLoading, setAllUnit) => {

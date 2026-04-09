@@ -147,14 +147,14 @@ input[type="radio"]{
     margin-top: 1rem;
 }
 
-/* ── Compact TipTap for MCQ choices and essay answer fields ──────── */
-.mcq-input .tiptap-editor,
-.essay-math-input .tiptap-editor {
+/* ── Compact RichTextEditor for MCQ choices and essay answer fields ── */
+.mcq-input .rich-text-editor,
+.essay-math-input .rich-text-editor {
     margin: 0.5rem 0 0;
 }
 
-.mcq-input .ProseMirror,
-.essay-math-input .ProseMirror {
+.mcq-input .ql-editor,
+.essay-math-input .ql-editor {
     min-height: 70px;
 }
 

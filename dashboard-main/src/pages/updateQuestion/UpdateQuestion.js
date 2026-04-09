@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import TipTapEditor from '../../components/TipTapEditor/TipTapEditor';
+import RichTextEditor from '../../components/RichTextEditor/RichTextEditor';
 import getQuestionDetails from '../../api/getQuestionDetails.api'
 import updateQuestion from '../../api/updateQuestion.api'
 import addAnswerPic from '../../api/addAnswerPic.api'
@@ -32,8 +32,6 @@ const UpdateQuestion = () => {
     const [mcqAnswerTh, setMcqAnswerTh] = useState('')
     const [mcqAnswerFr, setMcqAnswerFr] = useState('')
     const [correctAnswer, setCorrectAnswer] = useState('')
-    // Key used to force-remount the essay TipTap editor after adding an answer
-    const [answerEditorKey, setAnswerEditorKey] = useState(0)
 
     const { questionID, questionTypeID, unitID, questionTypeName, subjectID } = useParams()
     const navigate = useNavigate()
@@ -46,6 +44,7 @@ const UpdateQuestion = () => {
         await getQuestionDetails(questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr)
     }
 
+    // Strips HTML tags to check if editor content is effectively empty
     const isQuestionEmpty = (html) => !html || html.replace(/<(.|\n)*?>/g, '').trim() === ''
 
     const selectQuestionPic = (e) => {
@@ -63,9 +62,7 @@ const UpdateQuestion = () => {
     const addAnswer = () => {
         if (isQuestionEmpty(answer)) return;
         setAllAnswer(current => [...current, answer]);
-        setAnswer('');
-        // Remount the essay TipTap editor to clear its content
-        setAnswerEditorKey(k => k + 1);
+        setAnswer(''); // ReactQuill is controlled – clears automatically
     }
 
     const removeAnswer = (item) => {
@@ -149,18 +146,17 @@ const UpdateQuestion = () => {
                     {autoCorrectLoading ? <p>Waiting...</p> : <p onClick={handleUpadteAutoCorrect}>(Chanage it to {questionDetails.autoCorrect ? 'Not Auto Correct' : 'Auto Correct'})</p>}
                 </div>
                 <div className="question-editor-wrapper">
-                    <TipTapEditor
-                        content={question}
-                        onUpdate={setQuestion}
+                    <RichTextEditor
+                        value={question}
+                        onChange={setQuestion}
                         placeholder="Type your question here. Click Σ to insert a math formula visually."
                     />
                 </div>
                 {(questionType == 'Essay') ? <div className="keyboard essay-answer">
                     <div className="essay-math-input">
-                        <TipTapEditor
-                            key={answerEditorKey}
-                            content={answer}
-                            onUpdate={setAnswer}
+                        <RichTextEditor
+                            value={answer}
+                            onChange={setAnswer}
                             placeholder="Type the answer. Click Σ to insert a math formula visually."
                         />
                     </div>
@@ -171,9 +167,9 @@ const UpdateQuestion = () => {
                                 <input type="radio" id="correct_1" defaultChecked value={mcqAnswerFs} name="correct-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                                 <p>Answer 1 (Correct answer)</p>
                             </div>
-                            <TipTapEditor
-                                content={mcqAnswerFs}
-                                onUpdate={setMcqAnswerFs}
+                            <RichTextEditor
+                                value={mcqAnswerFs}
+                                onChange={setMcqAnswerFs}
                                 placeholder="Type answer 1"
                             />
                         </div>
@@ -182,9 +178,9 @@ const UpdateQuestion = () => {
                                 <input type="radio" id="correct_2" value={mcqAnswerSe} name="correct-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                                 <p>Answer 2 (Correct answer)</p>
                             </div>
-                            <TipTapEditor
-                                content={mcqAnswerSe}
-                                onUpdate={setMcqAnswerSe}
+                            <RichTextEditor
+                                value={mcqAnswerSe}
+                                onChange={setMcqAnswerSe}
                                 placeholder="Type answer 2"
                             />
                         </div>
@@ -193,9 +189,9 @@ const UpdateQuestion = () => {
                                 <input type="radio" id="correct_3" value={mcqAnswerTh} name="correct-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                                 <p>Answer 3 (Correct answer)</p>
                             </div>
-                            <TipTapEditor
-                                content={mcqAnswerTh}
-                                onUpdate={setMcqAnswerTh}
+                            <RichTextEditor
+                                value={mcqAnswerTh}
+                                onChange={setMcqAnswerTh}
                                 placeholder="Type answer 3"
                             />
                         </div>
@@ -204,9 +200,9 @@ const UpdateQuestion = () => {
                                 <input type="radio" id="correct_4" value={mcqAnswerFr} name="correct-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                                 <p>Answer 4 (Correct answer)</p>
                             </div>
-                            <TipTapEditor
-                                content={mcqAnswerFr}
-                                onUpdate={setMcqAnswerFr}
+                            <RichTextEditor
+                                value={mcqAnswerFr}
+                                onChange={setMcqAnswerFr}
                                 placeholder="Type answer 4"
                             />
                         </div>

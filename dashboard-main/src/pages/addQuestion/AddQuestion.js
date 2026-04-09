@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import TipTapEditor from '../../components/TipTapEditor/TipTapEditor'
+import RichTextEditor from '../../components/RichTextEditor/RichTextEditor';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import addQuestion from '../../api/addQuestion.api'
 import addAnswerPic from '../../api/addAnswerPic.api'
@@ -41,14 +41,11 @@ const AddQuestion = () => {
     const [previewWrongAPTh, setPreviewWrongAPTh] = useState('')
     const [serverGraphError, setServerGraphError] = useState(null)
     const [serverGraphLoading, setServerGraphLoading] = useState(false)
-    // Keys used to force-remount TipTap editors on reset
-    const [questionEditorKey, setQuestionEditorKey] = useState(0)
-    const [answerEditorKey, setAnswerEditorKey] = useState(0)
-    const [mcqEditorKey, setMcqEditorKey] = useState(0)
 
     const { chapterID, chapterName, questionTypeID, unitID, questionTypeName, subjectID, questionNum } = useParams()
     const navigate = useNavigate()
 
+    // Strips HTML tags to check if editor content is effectively empty
     const isQuestionEmpty = (html) => !html || html.replace(/<(.|\n)*?>/g, '').trim() === ''
 
     const selectQuestionPic = (e) => {
@@ -90,9 +87,7 @@ const AddQuestion = () => {
     const addAnswer = () => {
         if (isQuestionEmpty(answer)) return;
         setAllAnswer(current => [...current, answer]);
-        setAnswer('');
-        // Remount the essay TipTap editor to clear its content
-        setAnswerEditorKey(k => k + 1);
+        setAnswer(''); // ReactQuill is controlled – clears automatically
     }
 
     const removeAnswer = (item) => {
@@ -187,10 +182,6 @@ const AddQuestion = () => {
         setPreviewWrongAPTh('')
         setServerGraphError(null)
         setserverOperationError(null)
-        // Remount all editors to clear their content
-        setQuestionEditorKey(k => k + 1)
-        setAnswerEditorKey(k => k + 1)
-        setMcqEditorKey(k => k + 1)
     }
 
     const handleChecked = (value) => {
@@ -237,10 +228,9 @@ const AddQuestion = () => {
                 </label>}
 
                 <div className="question-editor-wrapper">
-                    <TipTapEditor
-                        key={questionEditorKey}
-                        content={question}
-                        onUpdate={setQuestion}
+                    <RichTextEditor
+                        value={question}
+                        onChange={setQuestion}
                         placeholder="Type your question here. Click Σ to insert a math formula visually."
                     />
                 </div>
@@ -248,10 +238,9 @@ const AddQuestion = () => {
                 {(questionType === 'Essay Question') ? <>
                     <div className="keyboard essay-answer">
                         <div className="essay-math-input">
-                            <TipTapEditor
-                                key={answerEditorKey}
-                                content={answer}
-                                onUpdate={setAnswer}
+                            <RichTextEditor
+                                value={answer}
+                                onChange={setAnswer}
                                 placeholder="Type the answer. Click Σ to insert a math formula visually."
                             />
                         </div>
@@ -267,16 +256,16 @@ const AddQuestion = () => {
                             )
                         }) : ''}
                     </div>
-                </> : (questionType === "MCQ Question") ? <div key={mcqEditorKey} className="keyboard mcq-answer d-flex">
+                </> : (questionType === "MCQ Question") ? <div className="keyboard mcq-answer d-flex">
 
                     <div className='mcq-input'>
                         <div className='d-flex align-items-center answer-toggel'>
                             <input type="radio" id="correct_1" defaultChecked value={mcqAnswerFs} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 1 (Correct answer)</p>
                         </div>
-                        <TipTapEditor
-                            content={mcqAnswerFs}
-                            onUpdate={setMcqAnswerFs}
+                        <RichTextEditor
+                            value={mcqAnswerFs}
+                            onChange={setMcqAnswerFs}
                             placeholder="Type answer 1"
                         />
                     </div>
@@ -285,9 +274,9 @@ const AddQuestion = () => {
                             <input type="radio" id="correct_2" value={mcqAnswerSe} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 2 (Correct answer)</p>
                         </div>
-                        <TipTapEditor
-                            content={mcqAnswerSe}
-                            onUpdate={setMcqAnswerSe}
+                        <RichTextEditor
+                            value={mcqAnswerSe}
+                            onChange={setMcqAnswerSe}
                             placeholder="Type answer 2"
                         />
                     </div>
@@ -296,9 +285,9 @@ const AddQuestion = () => {
                             <input type="radio" id="correct_3" value={mcqAnswerTh} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 3 (Correct answer)</p>
                         </div>
-                        <TipTapEditor
-                            content={mcqAnswerTh}
-                            onUpdate={setMcqAnswerTh}
+                        <RichTextEditor
+                            value={mcqAnswerTh}
+                            onChange={setMcqAnswerTh}
                             placeholder="Type answer 3"
                         />
                     </div>
@@ -307,9 +296,9 @@ const AddQuestion = () => {
                             <input type="radio" id="correct_4" value={mcqAnswerFr} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 4 (Correct answer)</p>
                         </div>
-                        <TipTapEditor
-                            content={mcqAnswerFr}
-                            onUpdate={setMcqAnswerFr}
+                        <RichTextEditor
+                            value={mcqAnswerFr}
+                            onChange={setMcqAnswerFr}
                             placeholder="Type answer 4"
                         />
                     </div>

@@ -147,6 +147,17 @@ input[type="radio"]{
     margin-top: 1rem;
 }
 
+/* ── Compact TipTap for MCQ choices and essay answer fields ──────── */
+.mcq-input .tiptap-editor,
+.essay-math-input .tiptap-editor {
+    margin: 0.5rem 0 0;
+}
+
+.mcq-input .ProseMirror,
+.essay-math-input .ProseMirror {
+    min-height: 70px;
+}
+
 .keyboard li{
     position: absolute;
     top: 2.4px;
@@ -171,9 +182,6 @@ input[type="radio"]{
 
 .essay-math-input {
     flex: 1;
-    border: 1px solid rgb(94, 93, 93);
-    border-radius: 5px;
-    overflow: hidden;
     text-align: left;
 }
 

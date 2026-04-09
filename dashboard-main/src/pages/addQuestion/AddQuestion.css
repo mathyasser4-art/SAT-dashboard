@@ -198,9 +198,6 @@
 
 .essay-math-input {
     flex: 1;
-    border: 1px solid rgb(94, 93, 93);
-    border-radius: 5px;
-    overflow: visible;
     text-align: left;
 }
 
@@ -265,6 +262,17 @@ legend {
 
 .answer-toggel p{
     font-size: 18px !important;
+}
+
+/* ── Compact TipTap for MCQ choices and essay answer fields ──────── */
+.mcq-input .tiptap-editor,
+.essay-math-input .tiptap-editor {
+    margin: 0.5rem 0 0;
+}
+
+.mcq-input .ProseMirror,
+.essay-math-input .ProseMirror {
+    min-height: 70px;
 }
 
 /* ── Rich text question editor (ReactQuill + KaTeX) ─────────────── */

@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import RichTextEditor from '../../components/RichTextEditor/RichTextEditor'
+import TipTapEditor from '../../components/TipTapEditor/TipTapEditor'
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import addQuestion from '../../api/addQuestion.api'
 import addAnswerPic from '../../api/addAnswerPic.api'
 import addGraphQuestion from '../../api/addGraphQuestion.api';
 import correctIcon from '../../correct-icon.png'
-import NumeralKeyboard from '../../components/NumeralKeyboard/NumeralKeyboard'
 import '../../reusable.css';
 import './AddQuestion.css'
 
@@ -42,12 +41,15 @@ const AddQuestion = () => {
     const [previewWrongAPTh, setPreviewWrongAPTh] = useState('')
     const [serverGraphError, setServerGraphError] = useState(null)
     const [serverGraphLoading, setServerGraphLoading] = useState(false)
-    const [activeAnswerField, setActiveAnswerField] = useState(null)
+    // Keys used to force-remount TipTap editors on reset
+    const [questionEditorKey, setQuestionEditorKey] = useState(0)
+    const [answerEditorKey, setAnswerEditorKey] = useState(0)
+    const [mcqEditorKey, setMcqEditorKey] = useState(0)
 
     const { chapterID, chapterName, questionTypeID, unitID, questionTypeName, subjectID, questionNum } = useParams()
     const navigate = useNavigate()
 
-    const isQuestionEmpty = (html) => html.replace(/<(.|\n)*?>/g, '').trim() === ''
+    const isQuestionEmpty = (html) => !html || html.replace(/<(.|\n)*?>/g, '').trim() === ''
 
     const selectQuestionPic = (e) => {
         setQuestionPic(e.target.files[0])
@@ -86,10 +88,11 @@ const AddQuestion = () => {
     }
 
     const addAnswer = () => {
-        if (answer === '') return;
+        if (isQuestionEmpty(answer)) return;
         setAllAnswer(current => [...current, answer]);
         setAnswer('');
-        setActiveAnswerField(null)
+        // Remount the essay TipTap editor to clear its content
+        setAnswerEditorKey(k => k + 1);
     }
 
     const removeAnswer = (item) => {
@@ -97,9 +100,12 @@ const AddQuestion = () => {
     }
 
     const addNewQuestion = () => {
-        if (isQuestionEmpty(question) || questionPoint === '' || allAnswer.length === 0 && questionType === 'Essay Question'
-            || mcqAnswerFr === '' && questionType === 'MCQ Question' || mcqAnswerFs === '' && questionType === 'MCQ Question'
-            || mcqAnswerSe === '' && questionType === 'MCQ Question' || mcqAnswerTh === '' && questionType === 'MCQ Question') {
+        if (isQuestionEmpty(question) || questionPoint === ''
+            || (allAnswer.length === 0 && questionType === 'Essay Question')
+            || (isQuestionEmpty(mcqAnswerFr) && questionType === 'MCQ Question')
+            || (isQuestionEmpty(mcqAnswerFs) && questionType === 'MCQ Question')
+            || (isQuestionEmpty(mcqAnswerSe) && questionType === 'MCQ Question')
+            || (isQuestionEmpty(mcqAnswerTh) && questionType === 'MCQ Question')) {
             setserverOperationError('Enter the question data first!')
         } else {
             const data = new FormData()
@@ -181,6 +187,10 @@ const AddQuestion = () => {
         setPreviewWrongAPTh('')
         setServerGraphError(null)
         setserverOperationError(null)
+        // Remount all editors to clear their content
+        setQuestionEditorKey(k => k + 1)
+        setAnswerEditorKey(k => k + 1)
+        setMcqEditorKey(k => k + 1)
     }
 
     const handleChecked = (value) => {
@@ -189,38 +199,6 @@ const AddQuestion = () => {
 
     const checkedCorrecrAnswer = (value) => {
         setCorrectAnswer(value)
-    }
-
-    const getActiveAnswerValue = () => {
-        if (activeAnswerField === 'essay') return answer
-        if (activeAnswerField === 'mcq-1') return mcqAnswerFs
-        if (activeAnswerField === 'mcq-2') return mcqAnswerSe
-        if (activeAnswerField === 'mcq-3') return mcqAnswerTh
-        if (activeAnswerField === 'mcq-4') return mcqAnswerFr
-        return ''
-    }
-
-    const setActiveAnswerValue = (value) => {
-        if (activeAnswerField === 'essay') setAnswer(value)
-        if (activeAnswerField === 'mcq-1') setMcqAnswerFs(value)
-        if (activeAnswerField === 'mcq-2') setMcqAnswerSe(value)
-        if (activeAnswerField === 'mcq-3') setMcqAnswerTh(value)
-        if (activeAnswerField === 'mcq-4') setMcqAnswerFr(value)
-    }
-
-    const insertNumeral = (numeral) => {
-        const currentValue = getActiveAnswerValue()
-        setActiveAnswerValue(`${currentValue}${numeral}`)
-    }
-
-    const backspaceNumeral = () => {
-        const currentValue = getActiveAnswerValue()
-        setActiveAnswerValue(currentValue.slice(0, -1))
-    }
-
-    const insertSpace = () => {
-        const currentValue = getActiveAnswerValue()
-        setActiveAnswerValue(`${currentValue} `)
     }
 
     return (
@@ -259,9 +237,10 @@ const AddQuestion = () => {
                 </label>}
 
                 <div className="question-editor-wrapper">
-                    <RichTextEditor
-                        value={question}
-                        onChange={setQuestion}
+                    <TipTapEditor
+                        key={questionEditorKey}
+                        content={question}
+                        onUpdate={setQuestion}
                         placeholder="Type your question here. Click Σ to insert a math formula visually."
                     />
                 </div>
@@ -269,119 +248,70 @@ const AddQuestion = () => {
                 {(questionType === 'Essay Question') ? <>
                     <div className="keyboard essay-answer">
                         <div className="essay-math-input">
-                            <input
-                                type="text"
-                                placeholder="Type the answer using English or Arabic numerals"
-                                value={answer}
-                                onFocus={() => setActiveAnswerField('essay')}
-                                onChange={e => setAnswer(e.target.value)}
+                            <TipTapEditor
+                                key={answerEditorKey}
+                                content={answer}
+                                onUpdate={setAnswer}
+                                placeholder="Type the answer. Click Σ to insert a math formula visually."
                             />
-                            {activeAnswerField === 'essay' ? (
-                                <NumeralKeyboard
-                                    onInsert={insertNumeral}
-                                    onBackspace={backspaceNumeral}
-                                    onSpace={insertSpace}
-                                    onClose={() => setActiveAnswerField(null)}
-                                />
-                            ) : ''}
                         </div>
                         <li onClick={addAnswer}>+</li>
                     </div>
                     <div className='d-flex flex-wrap'>
-                        {(allAnswer.length !== 0) ? allAnswer.map(item => {
+                        {(allAnswer.length !== 0) ? allAnswer.map((item, index) => {
                             return (
-                                <div className='answer-item' key={item}>
-                                    <p>{item}</p>
+                                <div className='answer-item' key={index}>
+                                    <p dangerouslySetInnerHTML={{ __html: item }} />
                                     <span onClick={() => removeAnswer(item)}>x</span>
                                 </div>
                             )
                         }) : ''}
                     </div>
-                </> : (questionType === "MCQ Question") ? <div className="keyboard mcq-answer d-flex">
+                </> : (questionType === "MCQ Question") ? <div key={mcqEditorKey} className="keyboard mcq-answer d-flex">
 
                     <div className='mcq-input'>
                         <div className='d-flex align-items-center answer-toggel'>
                             <input type="radio" id="correct_1" defaultChecked value={mcqAnswerFs} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 1 (Correct answer)</p>
                         </div>
-                        <input
-                            type="text"
+                        <TipTapEditor
+                            content={mcqAnswerFs}
+                            onUpdate={setMcqAnswerFs}
                             placeholder="Type answer 1"
-                            value={mcqAnswerFs}
-                            onFocus={() => setActiveAnswerField('mcq-1')}
-                            onChange={e => setMcqAnswerFs(e.target.value)}
                         />
-                        {activeAnswerField === 'mcq-1' ? (
-                            <NumeralKeyboard
-                                onInsert={insertNumeral}
-                                onBackspace={backspaceNumeral}
-                                onSpace={insertSpace}
-                                onClose={() => setActiveAnswerField(null)}
-                            />
-                        ) : ''}
                     </div>
                     <div className='mcq-input'>
                         <div className='d-flex align-items-center answer-toggel'>
                             <input type="radio" id="correct_2" value={mcqAnswerSe} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 2 (Correct answer)</p>
                         </div>
-                        <input
-                            type="text"
+                        <TipTapEditor
+                            content={mcqAnswerSe}
+                            onUpdate={setMcqAnswerSe}
                             placeholder="Type answer 2"
-                            value={mcqAnswerSe}
-                            onFocus={() => setActiveAnswerField('mcq-2')}
-                            onChange={e => setMcqAnswerSe(e.target.value)}
                         />
-                        {activeAnswerField === 'mcq-2' ? (
-                            <NumeralKeyboard
-                                onInsert={insertNumeral}
-                                onBackspace={backspaceNumeral}
-                                onSpace={insertSpace}
-                                onClose={() => setActiveAnswerField(null)}
-                            />
-                        ) : ''}
                     </div>
                     <div className='mcq-input'>
                         <div className='d-flex align-items-center answer-toggel'>
                             <input type="radio" id="correct_3" value={mcqAnswerTh} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 3 (Correct answer)</p>
                         </div>
-                        <input
-                            type="text"
+                        <TipTapEditor
+                            content={mcqAnswerTh}
+                            onUpdate={setMcqAnswerTh}
                             placeholder="Type answer 3"
-                            value={mcqAnswerTh}
-                            onFocus={() => setActiveAnswerField('mcq-3')}
-                            onChange={e => setMcqAnswerTh(e.target.value)}
                         />
-                        {activeAnswerField === 'mcq-3' ? (
-                            <NumeralKeyboard
-                                onInsert={insertNumeral}
-                                onBackspace={backspaceNumeral}
-                                onSpace={insertSpace}
-                                onClose={() => setActiveAnswerField(null)}
-                            />
-                        ) : ''}
                     </div>
                     <div className='mcq-input'>
                         <div className='d-flex align-items-center answer-toggel'>
                             <input type="radio" id="correct_4" value={mcqAnswerFr} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 4 (Correct answer)</p>
                         </div>
-                        <input
-                            type="text"
+                        <TipTapEditor
+                            content={mcqAnswerFr}
+                            onUpdate={setMcqAnswerFr}
                             placeholder="Type answer 4"
-                            value={mcqAnswerFr}
-                            onFocus={() => setActiveAnswerField('mcq-4')}
-                            onChange={e => setMcqAnswerFr(e.target.value)}
                         />
-                        {activeAnswerField === 'mcq-4' ? (
-                            <NumeralKeyboard
-                                onInsert={insertNumeral}
-                                onBackspace={backspaceNumeral}
-                                onSpace={insertSpace}
-                                onClose={() => setActiveAnswerField(null)}
-                            />
-                        ) : ''}
                     </div>
                 </div> : ''}
                 <input type="text" placeholder='Enter the question points' value={questionPoint} onChange={e => setQuestionPoint(e.target.value)} />

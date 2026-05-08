@@ -1,10 +1,9 @@
-const URL = '/api/answer/uploadPic'
+const URL = '/api/question/updateAnswerPic'
 
-const addAnswerPic = (data, setserverOperationError, setServerOperationLoading, setPicSaved) => {
-
+const addAnswerPic = (data, questionID, setserverOperationError, setServerOperationLoading, setPicSaved) => {
     setServerOperationLoading(true)
-    fetch(`${URL}`, {
-        method: 'POST',
+    fetch(`${URL}/${questionID}`, {
+        method: 'PUT',
         body: data
     })
         .then((response) => response.json())

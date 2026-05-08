@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import RichTextEditor from '../../components/RichTextEditor/RichTextEditor'
+import TipTapEditor from '../../components/TipTapEditor/TipTapEditor'
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import addQuestion from '../../api/addQuestion.api'
 import addAnswerPic from '../../api/addAnswerPic.api'
@@ -138,7 +138,7 @@ const AddQuestion = () => {
         if (answerPic) {
             const data = new FormData()
             data.append('image', answerPic)
-            addAnswerPic(data, quesionID, setserverOperationError, setServerLoadingPic, setQuesionFullAdded, 'add', navigate, chapterID, questionTypeID, unitID)
+            addAnswerPic(data, quesionID, setserverOperationError, setServerLoadingPic, setQuesionFullAdded)
         } else {
             setserverOperationError('Upload the answer picture first!')
         }
@@ -256,9 +256,9 @@ const AddQuestion = () => {
                     <input className='select-input' type="file" name='images' onChange={selectQuestionPic} accept='.png, .jpg, .jpeg, .webp' />
                 </label>}
                 <div style={{ marginBottom: '20px' }}>
-                    <RichTextEditor
-                        value={question}
-                        onChange={setQuestion}
+                    <TipTapEditor
+                        content={question}
+                        onUpdate={setQuestion}
                         placeholder="Type your question here. Click Σ to insert a math formula visually."
                     />
                 </div>

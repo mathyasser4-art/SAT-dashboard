@@ -1,17 +1,15 @@
 const URL = '/api/question/addGraphQuestion';
 
-const addGraphQuestion = (data, setserverOperationError, setServerOperationLoading, setQuestionAdded, setQuestionID) => {
-
+const addGraphQuestion = (data, questionID, setserverOperationError, setServerOperationLoading, setQuestionAdded) => {
     setServerOperationLoading(true);
-    fetch(`${URL}`, {
-        method: 'POST',
+    fetch(`${URL}/${questionID}`, {
+        method: 'PUT',
         body: data
     })
     .then((response) => response.json())
     .then((responseJson) => {
         if (responseJson.message === 'success') {
             setQuestionAdded(true);
-            setQuestionID(responseJson.questionData._id);
             setServerOperationLoading(false);
             setserverOperationError(null);
         } else {

@@ -104,8 +104,10 @@ const AddQuestion = () => {
             setserverOperationError('Enter the question data first!')
         } else {
             const data = new FormData()
-            if (questionPic)
+            if (questionPic) {
                 data.append('image', questionPic)
+                data.append('questionPic', questionPic)
+            }
             data.append('question', question)
             if (questionType === 'Essay Question') {
                 allAnswer.forEach(item => {
@@ -141,7 +143,7 @@ const AddQuestion = () => {
         if (answerPic) {
             const data = new FormData()
             data.append('image', answerPic)
-            addAnswerPic(data, quesionID, setserverOperationError, setServerLoadingPic, setQuesionFullAdded, 'add', navigate, chapterID, questionTypeID, unitID)
+            addAnswerPic(data, setserverOperationError, setServerLoadingPic, setQuesionFullAdded)
         } else {
             setserverOperationError('Upload the answer picture first!')
         }

@@ -79,8 +79,10 @@ const UpdateQuestion = () => {
             setserverOperationError('Enter the question data first!')
         } else {
             const data = new FormData()
-            if (questionPic)
+            if (questionPic) {
                 data.append('image', questionPic)
+                data.append('questionPic', questionPic)
+            }
             data.append('question', question)
             if (questionType == 'Essay') {
                 allAnswer.map(item => {

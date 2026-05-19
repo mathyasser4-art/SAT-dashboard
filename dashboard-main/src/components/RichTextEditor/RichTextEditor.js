@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Quill } from 'react-quill';
 import ReactQuill from 'react-quill';
+import ImageUploader from 'quill-image-uploader';
 import katex from 'katex';
 
 // CSS imports – order matters for specificity
@@ -17,6 +18,8 @@ import './RichTextEditor.css';
 
 // Make katex available globally for Quill's formula blot
 window.katex = katex;
+
+Quill.register('modules/imageUploader', ImageUploader);
 
 // Build the enableMathQuill function once at module level
 const enableMathQuill = mathquill4quill({ Quill, katex });
@@ -43,11 +46,35 @@ const modules = {
         ['bold', 'italic', 'underline'],
         [{ list: 'ordered' }, { list: 'bullet' }],
         ['formula'],
+        ['image'],
         ['clean'],
     ],
+    imageUploader: {
+        upload: file => {
+            const data = new FormData();
+            data.append('file', file);
+
+            return fetch('/api/upload-image', {
+                method: 'POST',
+                body: data,
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Image upload failed');
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    if (!result.url) {
+                        throw new Error('Missing upload URL');
+                    }
+                    return result.url;
+                });
+        },
+    },
 };
 
-const formats = ['bold', 'italic', 'underline', 'list', 'bullet', 'formula'];
+const formats = ['bold', 'italic', 'underline', 'list', 'bullet', 'formula', 'image'];
 
 /**
  * RichTextEditor

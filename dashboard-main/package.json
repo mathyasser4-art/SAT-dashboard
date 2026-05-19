@@ -19,6 +19,7 @@
     "react-scripts": "5.0.1",
     "react-quill": "^2.0.0",
     "katex": "^0.16.9",
+    "quill-image-uploader": "^1.2.0",
     "jquery": "^3.7.1",
     "mathquill": "^0.10.1",
     "web-vitals": "^2.1.4"

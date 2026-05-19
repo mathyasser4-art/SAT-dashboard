@@ -55,6 +55,7 @@ const modules = {
             data.append('file', file);
 
             return fetch('/api/upload-image', {
+            return fetch('https://sat-backend-production.up.railway.app/api/upload-image', {
                 method: 'POST',
                 body: data,
             })

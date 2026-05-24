@@ -24,6 +24,13 @@
     line-height: 1.7;
 }
 
+.rich-text-editor .ql-editor img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0.5rem 0;
+}
+
 .rich-text-editor .ql-editor.ql-blank::before {
     color: #999;
     font-style: normal;

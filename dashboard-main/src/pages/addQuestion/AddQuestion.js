@@ -1,0 +1,382 @@
+import React, { useState } from 'react';
+import RichTextEditor from '../../components/RichTextEditor/RichTextEditor';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import addQuestion from '../../api/addQuestion.api'
+import addAnswerPic from '../../api/addAnswerPic.api'
+import addGraphQuestion from '../../api/addGraphQuestion.api';
+import correctIcon from '../../correct-icon.png'
+import '../../reusable.css';
+import './AddQuestion.css'
+
+const AddQuestion = () => {
+    const [serverOperationError, setserverOperationError] = useState(null)
+    const [serverOperationLoading, setServerOperationLoading] = useState(false)
+    const [serverLoadingPic, setServerLoadingPic] = useState(false)
+    const [question, setQuestion] = useState('')
+    const [answer, setAnswer] = useState('')
+    const [questionPoint, setQuestionPoint] = useState('')
+    const [allAnswer, setAllAnswer] = useState([])
+    const [questionPic, setQuestionPic] = useState()
+    const [answerPic, setAnswerPic] = useState()
+    const [previewQuestionPic, setPreviewQuestionPic] = useState()
+    const [previewAnswerPic, setPreviewAnswerPic] = useState()
+    const [quesionAdded, setQuesionAdded] = useState(false)
+    const [quesionGraphAdded, setQuesionGraphAdded] = useState(false)
+    const [quesionFullAdded, setQuesionFullAdded] = useState(false)
+    const [quesionID, setQuesionID] = useState()
+    const [mcqAnswerFs, setMcqAnswerFs] = useState('')
+    const [mcqAnswerSe, setMcqAnswerSe] = useState('')
+    const [mcqAnswerTh, setMcqAnswerTh] = useState('')
+    const [mcqAnswerFr, setMcqAnswerFr] = useState('')
+    const [correctAnswer, setCorrectAnswer] = useState('')
+    const [questionType, setQuestionType] = useState('Essay Question')
+    const [autoCorrect, setAutoCorrect] = useState(false)
+    const [mcqAnswerFrPic, setMcqAnswerFrPic] = useState()
+    const [previewCorrectAP, setPreviewCorrectAP] = useState('')
+    const [wrongAnswerPicFs, setWrongAnswerPicFs] = useState()
+    const [previewWrongAPFs, setPreviewWrongAPFs] = useState('')
+    const [wrongAnswerPicSe, setWrongAnswerPicSe] = useState()
+    const [previewWrongAPSe, setPreviewWrongAPSe] = useState('')
+    const [wrongAnswerPicTh, setWrongAnswerPicTh] = useState()
+    const [previewWrongAPTh, setPreviewWrongAPTh] = useState('')
+    const [serverGraphError, setServerGraphError] = useState(null)
+    const [serverGraphLoading, setServerGraphLoading] = useState(false)
+
+    const { chapterID, chapterName, questionTypeID, unitID, questionTypeName, subjectID, questionNum } = useParams()
+    const navigate = useNavigate()
+
+    // Strips HTML tags to check if editor content is effectively empty
+    const isQuestionEmpty = (html) => !html || html.replace(/<(.|\n)*?>/g, '').trim() === ''
+
+    const selectQuestionPic = (e) => {
+        setQuestionPic(e.target.files[0])
+        const picUrl = URL.createObjectURL(e.target.files[0])
+        setPreviewQuestionPic(picUrl)
+    }
+
+    const selectAnswerPic = (e) => {
+        setAnswerPic(e.target.files[0])
+        const picUrl = URL.createObjectURL(e.target.files[0])
+        setPreviewAnswerPic(picUrl)
+    }
+
+    const selectmcqAnswerFrPic = (e) => {
+        setMcqAnswerFrPic(e.target.files[0])
+        const picUrl = URL.createObjectURL(e.target.files[0])
+        setPreviewCorrectAP(picUrl)
+    }
+
+    const selectWrongAnswerPicFs = (e) => {
+        setWrongAnswerPicFs(e.target.files[0])
+        const picUrl = URL.createObjectURL(e.target.files[0])
+        setPreviewWrongAPFs(picUrl)
+    }
+
+    const selectWrongAnswerPicSe = (e) => {
+        setWrongAnswerPicSe(e.target.files[0])
+        const picUrl = URL.createObjectURL(e.target.files[0])
+        setPreviewWrongAPSe(picUrl)
+    }
+
+    const selectWrongAnswerPicTh = (e) => {
+        setWrongAnswerPicTh(e.target.files[0])
+        const picUrl = URL.createObjectURL(e.target.files[0])
+        setPreviewWrongAPTh(picUrl)
+    }
+
+    const addAnswer = () => {
+        if (isQuestionEmpty(answer)) return;
+        setAllAnswer(current => [...current, answer]);
+        setAnswer(''); // ReactQuill is controlled – clears automatically
+    }
+
+    const removeAnswer = (item) => {
+        setAllAnswer(current => current.filter(e => e !== item))
+    }
+
+    const addNewQuestion = () => {
+        if (isQuestionEmpty(question) || questionPoint === ''
+            || (allAnswer.length === 0 && questionType === 'Essay Question')
+            || (isQuestionEmpty(mcqAnswerFr) && questionType === 'MCQ Question')
+            || (isQuestionEmpty(mcqAnswerFs) && questionType === 'MCQ Question')
+            || (isQuestionEmpty(mcqAnswerSe) && questionType === 'MCQ Question')
+            || (isQuestionEmpty(mcqAnswerTh) && questionType === 'MCQ Question')) {
+            setserverOperationError('Enter the question data first!')
+        } else {
+            const data = new FormData()
+            if (questionPic) {
+                data.append('image', questionPic)
+            }
+            data.append('question', question)
+            if (questionType === 'Essay Question') {
+                allAnswer.forEach(item => {
+                    const cleanAnswer = item.replace(/<[^>]*>?/gm, '').trim();
+                    data.append('answer', cleanAnswer)
+                })
+            }
+            if (questionType === 'MCQ Question') {
+                if (correctAnswer === '') {
+                    data.append('correctAnswer', mcqAnswerFs)
+                } else {
+                    data.append('correctAnswer', correctAnswer)
+                }
+                data.append('wrongAnswer', mcqAnswerFs)
+                data.append('wrongAnswer', mcqAnswerSe)
+                data.append('wrongAnswer', mcqAnswerTh)
+                data.append('wrongAnswer', mcqAnswerFr)
+            }
+            if (autoCorrect)
+                data.append('autoCorrect', true)
+            if (questionType === 'MCQ Question') {
+                data.append('typeOfAnswer', 'MCQ')
+            } else if (questionType === 'Graph Question') {
+                data.append('typeOfAnswer', 'Graph')
+            }
+            data.append('questionPoints', questionPoint)
+            data.append('chapter', chapterID)
+            data.append('index', questionNum)
+            addQuestion(data, setserverOperationError, setServerOperationLoading, setQuesionAdded, setQuesionID, questionType, setQuesionGraphAdded)
+        }
+    }
+
+    const uploadAnswerPic = () => {
+        if (answerPic) {
+            const data = new FormData()
+            data.append('image', answerPic)
+            addAnswerPic(data, setserverOperationError, setServerLoadingPic, setQuesionFullAdded)
+        } else {
+            setserverOperationError('Upload the answer picture first!')
+        }
+    }
+
+    const uploadAnswerGraphPic = () => {
+        if (previewCorrectAP === '' || previewWrongAPFs === '' || previewWrongAPSe === '' || previewWrongAPTh === '') {
+            setServerGraphError('Upload the answer pictures first!')
+        } else {
+            const data = new FormData()
+            data.append('image', mcqAnswerFrPic)
+            data.append('image', wrongAnswerPicFs)
+            data.append('image', wrongAnswerPicSe)
+            data.append('image', wrongAnswerPicTh)
+            addGraphQuestion(data, quesionID, setServerGraphError, setServerGraphLoading, setQuesionAdded)
+        }
+    }
+
+    const newQuestion = () => {
+        setQuestion('')
+        setQuesionFullAdded(false)
+        setAnswer('')
+        setQuestionPoint('')
+        setAllAnswer([])
+        setQuestionPic()
+        setAnswerPic()
+        setPreviewQuestionPic()
+        setPreviewAnswerPic()
+        setQuesionAdded(false)
+        setQuesionGraphAdded(false)
+        setMcqAnswerFr('')
+        setMcqAnswerFs('')
+        setMcqAnswerSe('')
+        setMcqAnswerTh('')
+        setPreviewCorrectAP('')
+        setPreviewWrongAPFs('')
+        setPreviewWrongAPSe('')
+        setPreviewWrongAPTh('')
+        setServerGraphError(null)
+        setserverOperationError(null)
+    }
+
+    const handleChecked = (value) => {
+        setQuestionType(value);
+    }
+
+    const checkedCorrecrAnswer = (value) => {
+        setCorrectAnswer(value)
+    }
+
+    return (
+        <div className="add-question">
+            <div>
+                <p className='text-color head-title'>Add new question in <span>{(questionTypeName === 'Past Papers') ? 'exam' : 'chapter'}</span> (<span style={{ color: "rgb(56, 56, 238)" }}>{chapterName}</span>)</p>
+                {(serverOperationError) ? <p className='text-error'>{serverOperationError}</p> : ''}
+                <fieldset>
+                    <legend>Choose the type of question</legend>
+                    <div className='d-flex align-items-center'>
+                        <input type="radio" id="berries_1" defaultChecked value="Essay Question" name="berries" onChange={e => handleChecked(e.target.value)} />
+                        <label htmlFor="berries_1">Essay Question</label>
+                    </div>
+                    <div className='d-flex align-items-center'>
+                        <input type="radio" id="berries_2" value="MCQ Question" name="berries" onChange={e => handleChecked(e.target.value)} />
+                        <label htmlFor="berries_2">MCQ Question</label>
+                    </div>
+                    <div className='d-flex align-items-center'>
+                        <input type="radio" id="berries_3" value="Graph Question" name="berries" onChange={e => handleChecked(e.target.value)} />
+                        <label htmlFor="berries_3">Graph Question</label>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>This question is auto correct?</legend>
+                    <div className='d-flex align-items-center'>
+                        <input type="checkbox" id="berries_1" name="berries" onChange={e => setAutoCorrect(e.target.checked)} />
+                        <label htmlFor="berries_1">Auto Correct</label>
+                    </div>
+                </fieldset>
+                {(previewQuestionPic) ? <img className='preview-img' src={previewQuestionPic} alt="" /> : <label>
+                    <div>
+                        <i className="fa fa-camera" aria-hidden="true"></i>
+                        <p>Choose the question picture</p>
+                    </div>
+                    <input className='select-input' type="file" name='images' onChange={selectQuestionPic} accept='.png, .jpg, .jpeg, .webp' />
+                </label>}
+
+                <div className="question-editor-wrapper">
+                    <RichTextEditor
+                        value={question}
+                        onChange={setQuestion}
+                        placeholder="Type your question here. Click Σ to insert a math formula visually."
+                    />
+                </div>
+
+                {(questionType === 'Essay Question') ? <>
+                    <div className="keyboard essay-answer">
+                        <div className="essay-math-input">
+                            <RichTextEditor
+                                value={answer}
+                                onChange={setAnswer}
+                                placeholder="Type the answer. Click Σ to insert a math formula visually."
+                            />
+                        </div>
+                        <li onClick={addAnswer}>+</li>
+                    </div>
+                    <div className='d-flex flex-wrap'>
+                        {(allAnswer.length !== 0) ? allAnswer.map((item, index) => {
+                            return (
+                                <div className='answer-item' key={index}>
+                                    <p dangerouslySetInnerHTML={{ __html: item }} />
+                                    <span onClick={() => removeAnswer(item)}>x</span>
+                                </div>
+                            )
+                        }) : ''}
+                    </div>
+                </> : (questionType === "MCQ Question") ? <div className="keyboard mcq-answer d-flex">
+
+                    <div className='mcq-input'>
+                        <div className='d-flex align-items-center answer-toggel'>
+                            <input type="radio" id="correct_1" defaultChecked value={mcqAnswerFs} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                            <p>Answer 1 (Correct answer)</p>
+                        </div>
+                        <RichTextEditor
+                            value={mcqAnswerFs}
+                            onChange={setMcqAnswerFs}
+                            placeholder="Type answer 1"
+                        />
+                    </div>
+                    <div className='mcq-input'>
+                        <div className='d-flex align-items-center answer-toggel'>
+                            <input type="radio" id="correct_2" value={mcqAnswerSe} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                            <p>Answer 2 (Correct answer)</p>
+                        </div>
+                        <RichTextEditor
+                            value={mcqAnswerSe}
+                            onChange={setMcqAnswerSe}
+                            placeholder="Type answer 2"
+                        />
+                    </div>
+                    <div className='mcq-input'>
+                        <div className='d-flex align-items-center answer-toggel'>
+                            <input type="radio" id="correct_3" value={mcqAnswerTh} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                            <p>Answer 3 (Correct answer)</p>
+                        </div>
+                        <RichTextEditor
+                            value={mcqAnswerTh}
+                            onChange={setMcqAnswerTh}
+                            placeholder="Type answer 3"
+                        />
+                    </div>
+                    <div className='mcq-input'>
+                        <div className='d-flex align-items-center answer-toggel'>
+                            <input type="radio" id="correct_4" value={mcqAnswerFr} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                            <p>Answer 4 (Correct answer)</p>
+                        </div>
+                        <RichTextEditor
+                            value={mcqAnswerFr}
+                            onChange={setMcqAnswerFr}
+                            placeholder="Type answer 4"
+                        />
+                    </div>
+                </div> : ''}
+                <input type="text" placeholder='Enter the question points' value={questionPoint} onChange={e => setQuestionPoint(e.target.value)} />
+                <div className="d-flex">
+                    <button className='button' onClick={addNewQuestion}>{(serverOperationLoading) ? <span className="button-loader"></span> : 'Add'}</button>
+                    <Link to={`/chapter/${questionTypeName}/${chapterID}/${questionTypeID}/${unitID}/${subjectID}`}><button className='button cancel-button'>Cancel</button></Link>
+                </div>
+                {(quesionGraphAdded) ? <div className='correct d-flex align-items-center'>
+                    <img src={correctIcon} alt="" />
+                    <p>Question added success. you can add the graph answer pictures now.</p>
+                </div> : ''}
+                {(questionType === "Graph Question") ? <><div className="graph-container d-flex">
+                    {(previewCorrectAP) ? <img src={previewCorrectAP} className="graph-preview graph-preview-fs" alt="" /> : <label className={`${(quesionGraphAdded) ? '' : 'answer-pic'} graph-img graph-img-fs`}>
+                        <div>
+                            <i className="fa fa-camera" aria-hidden="true"></i>
+                            <p>Choose the correct answer picture</p>
+                        </div>
+                        {(quesionGraphAdded) ? <input className='select-input' type="file" name='images' onChange={selectmcqAnswerFrPic} accept='.png, .jpg, .jpeg, .webp' /> : ""}
+                    </label>}
+                    {(previewWrongAPFs) ? <img src={previewWrongAPFs} className="graph-preview" alt="" /> : <label className={`${(quesionGraphAdded) ? '' : 'answer-pic'} graph-img`}>
+                        <div>
+                            <i className="fa fa-camera" aria-hidden="true"></i>
+                            <p>Choose the wrong answer picture(1)</p>
+                        </div>
+                        {(quesionGraphAdded) ? <input className='select-input' type="file" name='images' onChange={selectWrongAnswerPicFs} accept='.png, .jpg, .jpeg, .webp' /> : ""}
+                    </label>}
+                    {(previewWrongAPSe) ? <img src={previewWrongAPSe} className="graph-preview" alt="" /> : <label className={`${(quesionGraphAdded) ? '' : 'answer-pic'} graph-img`}>
+                        <div>
+                            <i className="fa fa-camera" aria-hidden="true"></i>
+                            <p>Choose the wrong answer picture(2)</p>
+                        </div>
+                        {(quesionGraphAdded) ? <input className='select-input' type="file" name='images' onChange={selectWrongAnswerPicSe} accept='.png, .jpg, .jpeg, .webp' /> : ""}
+                    </label>}
+                    {(previewWrongAPTh) ? <img src={previewWrongAPTh} className="graph-preview" alt="" /> : <label className={`${(quesionGraphAdded) ? '' : 'answer-pic'} graph-img`}>
+                        <div>
+                            <i className="fa fa-camera" aria-hidden="true"></i>
+                            <p>Choose the wrong answer picture(3)</p>
+                        </div>
+                        {(quesionGraphAdded) ? <input className='select-input' type="file" name='images' onChange={selectWrongAnswerPicTh} accept='.png, .jpg, .jpeg, .webp' /> : ""}
+                    </label>}
+                </div>
+                    {(serverGraphError) ? <p className='text-error'>{serverGraphError}</p> : ''}
+                    <div className="d-flex">
+                        <button className='button answer-button' onClick={uploadAnswerGraphPic}>{(serverGraphLoading) ? <span className="button-loader"></span> : 'Upload Pictures'}</button>
+                    </div>
+                </> : ""}
+                {(quesionAdded) ? <div className='correct d-flex align-items-center'>
+                    <img src={correctIcon} alt="" />
+                    <p>Question added success. you can add the answer model picture now.</p>
+                </div> : ''}
+                {(previewAnswerPic) ? <img className='preview-img' src={previewAnswerPic} alt="" /> : <label className={`${(quesionAdded) ? '' : 'answer-pic'}`}>
+                    <div>
+                        <i className="fa fa-camera" aria-hidden="true"></i>
+                        <p>Choose the answer picture</p>
+                    </div>
+                    {(quesionAdded) ? <input className='select-input' type="file" name='images' onChange={selectAnswerPic} accept='.png, .jpg, .jpeg, .webp' /> : ""}
+                </label>}
+                <div className="d-flex">
+                    <button className='button answer-button' onClick={uploadAnswerPic}>{(serverLoadingPic) ? <span className="button-loader"></span> : 'Add'}</button>
+                </div>
+            </div>
+            {/* add question popup start */}
+            {(quesionFullAdded) ? <div className="add-question-popup question-popup d-flex justify-content-center align-items-center">
+                <div className='d-flex justify-content-center align-items-center flex-direction-column '>
+                    <img src={correctIcon} alt="" />
+                    <p className='text-color'>Success</p>
+                    <p className='text-color'>Congratulations, the full question has been successfully added.</p>
+                    <button className='button' onClick={newQuestion}>Add another question</button>
+                    <Link to={`/chapter/${questionTypeName}/${chapterID}/${questionTypeID}/${unitID}/${subjectID}`}><button className='button cancel-button'>Redirect to <span>{(questionTypeName === 'Past Papers') ? 'exam' : 'chapter'}</span> page</button></Link>
+                </div>
+            </div> : ''}
+            {/* add question popup end */}
+        </div>
+    );
+}
+
+export default AddQuestion;

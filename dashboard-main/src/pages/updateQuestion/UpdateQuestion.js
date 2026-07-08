@@ -81,12 +81,12 @@ const UpdateQuestion = () => {
             const data = new FormData()
             if (questionPic) {
                 data.append('image', questionPic)
-                data.append('questionPic', questionPic)
             }
             data.append('question', question)
             if (questionType == 'Essay') {
                 allAnswer.map(item => {
-                    data.append('answer', item)
+                    const cleanAnswer = item.replace(/<[^>]*>?/gm, '').trim();
+                    data.append('answer', cleanAnswer)
                 })
             }
             if (questionType == 'MCQ') {

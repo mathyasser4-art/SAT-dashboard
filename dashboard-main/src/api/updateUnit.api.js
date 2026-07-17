@@ -13,10 +13,7 @@ const updateUnit = (data, questionTypeID, unitID, subjectID, setserverOperationE
     setServerOperationLoading(true)
     fetch(`${URL}/${questionTypeID}/${unitID}/${subjectID}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
-        },
+        headers: getHeaders(true),
         body: JSON.stringify(data)
     })
         .then((response) => response.json())

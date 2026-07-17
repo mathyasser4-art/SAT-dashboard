@@ -13,10 +13,7 @@ const deleteSystem = (systemID, setserverOperationError, setServerOperationLoadi
     setServerOperationLoading(true);
     fetch(`${URL}/${systemID}`, {
         method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
-        },
+        headers: getHeaders(true),
     })
     .then((response) => response.json())
     .then((responseJson) => {

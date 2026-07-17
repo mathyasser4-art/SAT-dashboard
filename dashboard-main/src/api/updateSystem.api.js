@@ -13,10 +13,7 @@ const updateSystem = (data, systemID, setserverOperationError, setServerOperatio
     setServerOperationLoading(true)
     fetch(`${URL}/${systemID}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
-        },
+        headers: getHeaders(true),
         body: JSON.stringify(data)
     })
         .then((response) => response.json())

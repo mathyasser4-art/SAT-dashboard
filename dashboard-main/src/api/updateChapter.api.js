@@ -13,10 +13,7 @@ const updateChapter = (data, chapterID, setserverOperationError, setServerOperat
     setServerOperationLoading(true)
     fetch(`${URL}${chapterID}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
-        },
+        headers: getHeaders(true),
         body: JSON.stringify(data)
     })
         .then((response) => response.json())

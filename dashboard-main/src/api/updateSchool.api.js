@@ -13,10 +13,7 @@ const updateSchool = (data, schoolID, setserverOperationError, setServerOperatio
     setServerOperationLoading(true)
     fetch(`${URL}/${schoolID}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
-        },
+        headers: getHeaders(true),
         body: JSON.stringify(data)
     })
         .then((response) => response.json())

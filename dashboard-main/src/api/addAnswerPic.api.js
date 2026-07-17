@@ -13,9 +13,7 @@ const addAnswerPic = (data, setserverOperationError, setServerOperationLoading, 
     setServerOperationLoading(true)
     fetch(`${URL}`, {
         method: 'POST',
-        headers: {
-            'authorization': `pracYas09${Token}`
-        },
+        headers: getHeaders(false),
         body: data
     })
         .then((response) => response.json())

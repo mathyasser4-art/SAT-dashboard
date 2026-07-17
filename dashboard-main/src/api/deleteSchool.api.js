@@ -13,10 +13,7 @@ const deleteSchool = (schoolID, setserverOperationError, setServerOperationLoadi
     setServerOperationLoading(true);
     fetch(`${URL}/${schoolID}`, {
         method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
-        },
+        headers: getHeaders(true),
     })
     .then((response) => response.json())
     .then((responseJson) => {

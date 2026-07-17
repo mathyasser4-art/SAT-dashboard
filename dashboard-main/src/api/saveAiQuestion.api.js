@@ -40,9 +40,7 @@ const getHeaders = (hasJson) => {
 
     return fetch(BASE_URL, {
         method: 'POST',
-        headers: {
-            'authorization': `pracYas09${Token}`
-        },
+        headers: getHeaders(false),
         body: data
     }).then(res => res.json())
 }

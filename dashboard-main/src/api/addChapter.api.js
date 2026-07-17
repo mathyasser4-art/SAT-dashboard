@@ -13,10 +13,7 @@ const addChapter = (data, questionTypeID, subjectID, setserverOperationError, se
     setServerOperationLoading(true)
     fetch(`${URL}/${questionTypeID}/${subjectID}`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
-        },
+        headers: getHeaders(true),
         body: JSON.stringify(data)
     })
         .then((response) => response.json())

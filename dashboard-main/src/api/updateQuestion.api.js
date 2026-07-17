@@ -13,9 +13,7 @@ const updateQuestion = (data, questionID, setserverOperationError, setServerOper
     setServerOperationLoading(true)
     fetch(`${URL}${questionID}`, {
         method: 'PUT',
-        headers: {
-            'authorization': `pracYas09${Token}`
-        }, 
+        headers: getHeaders(false), 
         body: data
     })
         .then((response) => response.json())

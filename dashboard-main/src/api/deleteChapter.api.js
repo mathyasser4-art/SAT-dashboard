@@ -13,10 +13,7 @@ const deleteChapter = (chapterID, setserverOperationError, setServerOperationLoa
     setServerOperationLoading(true);
     fetch(`${URL}/${chapterID}/${unitID}`, {
         method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
-        },
+        headers: getHeaders(true),
     })
     .then((response) => response.json())
     .then((responseJson) => {

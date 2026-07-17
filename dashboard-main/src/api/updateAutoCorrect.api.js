@@ -13,10 +13,7 @@ const updateAutoCorrect = (questionID, setserverOperationError, setAutoCorrectLo
     setAutoCorrectLoading(true)
     fetch(`${URL}${questionID}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
-        }
+        headers: getHeaders(true)
     })
         .then((response) => response.json())
         .then((responseJson) => {

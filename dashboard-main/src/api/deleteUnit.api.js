@@ -13,10 +13,7 @@ const deleteUnit = (questionTypeID, unitID, subjectID, setserverOperationError, 
     setServerOperationLoading(true)
     fetch(`${URL}${questionTypeID}/${unitID}/${subjectID}`, {
         method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'authorization': `pracYas09${Token}`
-        },
+        headers: getHeaders(true),
     })
         .then((response) => response.json())
         .then((responseJson) => {

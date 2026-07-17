@@ -1,14 +1,19 @@
 const URL = 'https://sat-backend-production.up.railway.app/subject/addSubject'
-const Token = localStorage.getItem('O_authDB')
+const Token = localStorage.getItem('O_authDB');
+const getHeaders = (hasJson) => {
+    const headers = {};
+    if (hasJson) headers['Content-Type'] = 'application/json';
+    if (Token && Token !== 'null' && Token !== 'undefined' && Token !== '') {
+        headers['authorization'] = `pracYas09${Token}`;
+    }
+    return headers;
+};
 
 const addSubject = (data, setserverOperationError, setServerOperationLoading, setAllSystem) => {
     setServerOperationLoading(true)
     fetch(URL, {
         method: 'post',
-        headers: {
-            'Content-Type': 'application/json',
-            'authrization': `pracYas09${Token}`
-        },
+        headers: getHeaders(true),
         body: JSON.stringify(data)
     })
         .then((response) => response.json())

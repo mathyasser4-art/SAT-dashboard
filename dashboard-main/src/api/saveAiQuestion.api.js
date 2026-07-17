@@ -7,7 +7,15 @@ const BASE_URL = 'https://sat-backend-production.up.railway.app/question/addQues
  * @param {string} chapterID - The chapter to add the question to
  */
 const saveAiQuestion = (questionData, chapterID) => {
-    const Token = localStorage.getItem('O_authDB')
+    const Token = localStorage.getItem('O_authDB');
+const getHeaders = (hasJson) => {
+    const headers = {};
+    if (hasJson) headers['Content-Type'] = 'application/json';
+    if (Token && Token !== 'null' && Token !== 'undefined' && Token !== '') {
+        headers['authorization'] = `pracYas09${Token}`;
+    }
+    return headers;
+};
     const data = new FormData()
 
     // Wrap question text in <p> to match Quill HTML format

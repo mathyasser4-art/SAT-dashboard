@@ -1,5 +1,13 @@
 const URL = 'https://sat-backend-production.up.railway.app/unit/updateUnit'
-const Token = localStorage.getItem('O_authDB')
+const Token = localStorage.getItem('O_authDB');
+const getHeaders = (hasJson) => {
+    const headers = {};
+    if (hasJson) headers['Content-Type'] = 'application/json';
+    if (Token && Token !== 'null' && Token !== 'undefined' && Token !== '') {
+        headers['authorization'] = `pracYas09${Token}`;
+    }
+    return headers;
+};
 
 const updateUnit = (data, questionTypeID, unitID, subjectID, setserverOperationError, setServerOperationLoading, setAllUnit) => {
     setServerOperationLoading(true)

@@ -16,22 +16,22 @@ const addGraphQuestion = (data, setserverOperationError, setServerOperationLoadi
         headers: getHeaders(false),
         body: data
     })
-    .then((response) => response.json())
-    .then((responseJson) => {
-        if (responseJson.message === 'success') {
-            setQuestionAdded(true);
-            setQuestionID(responseJson.questionData._id);
+        .then((response) => response.json())
+        .then((responseJson) => {
+            if (responseJson.message === 'success') {
+                setQuestionAdded(true);
+                setQuestionID(responseJson.questionData._id);
+                setServerOperationLoading(false);
+                setserverOperationError(null);
+            } else {
+                setserverOperationError(responseJson.message);
+                setServerOperationLoading(false);
+            }
+        })
+        .catch((error) => {
+            setserverOperationError(error.message);
             setServerOperationLoading(false);
-            setserverOperationError(null);
-        } else {
-            setserverOperationError(responseJson.message);
-            setServerOperationLoading(false);
-        }
-    })
-    .catch((error) => {
-        setserverOperationError(error.message);
-        setServerOperationLoading(false);
-    });
+        });
 };
 
 export default addGraphQuestion;

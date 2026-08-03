@@ -15,22 +15,22 @@ const deleteSystem = (systemID, setserverOperationError, setServerOperationLoadi
         method: 'DELETE',
         headers: getHeaders(true),
     })
-    .then((response) => response.json())
-    .then((responseJson) => {
-        if (responseJson.message === 'success') {
-            document.querySelector('.delete-system-popup').classList.replace('d-flex', 'd-none');
+        .then((response) => response.json())
+        .then((responseJson) => {
+            if (responseJson.message === 'success') {
+                document.querySelector('.delete-system-popup').classList.replace('d-flex', 'd-none');
+                setServerOperationLoading(false);
+                setserverOperationError(null);
+                setAllSystem(responseJson.allSystem);
+            } else {
+                setserverOperationError(responseJson.message);
+                setServerOperationLoading(false);
+            }
+        })
+        .catch((error) => {
+            setserverOperationError(error.message);
             setServerOperationLoading(false);
-            setserverOperationError(null);
-            setAllSystem(responseJson.allSystem);
-        } else {
-            setserverOperationError(responseJson.message);
-            setServerOperationLoading(false);
-        }
-    })
-    .catch((error) => {
-        setserverOperationError(error.message);
-        setServerOperationLoading(false);
-    });
+        });
 };
 
 export default deleteSystem;

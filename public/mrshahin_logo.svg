@@ -1,83 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 100" width="100%" height="100%" fill="none">
-  <defs>
-    <!-- Hostinger-inspired Gradients -->
-    <linearGradient id="dash-pub-hostinger-top" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#A777FF" />
-      <stop offset="50%" stop-color="#8C52FF" />
-      <stop offset="100%" stop-color="#7333F2" />
-    </linearGradient>
-
-    <linearGradient id="dash-pub-hostinger-primary" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#7A3EFF" />
-      <stop offset="50%" stop-color="#673DE6" />
-      <stop offset="100%" stop-color="#5122DA" />
-    </linearGradient>
-
-    <linearGradient id="dash-pub-hostinger-mid" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#5B2CE0" />
-      <stop offset="100%" stop-color="#3D18A8" />
-    </linearGradient>
-
-    <linearGradient id="dash-pub-hostinger-dark" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3B179E" />
-      <stop offset="100%" stop-color="#240D6A" />
-    </linearGradient>
-
-    <radialGradient id="dash-pub-hostinger-glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#8C52FF" stop-opacity="0.35" />
-      <stop offset="100%" stop-color="#673DE6" stop-opacity="0" />
-    </radialGradient>
-
-    <linearGradient id="dash-pub-text-purple-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="100%" stop-color="#F3E8FF" />
-    </linearGradient>
-
-    <filter id="dash-pub-subtle-shadow" x="-10%" y="-10%" width="130%" height="130%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#673DE6" flood-opacity="0.25" />
-    </filter>
-  </defs>
-
-  <!-- Ambient Glow Behind Mark -->
-  <circle cx="50" cy="50" r="42" fill="url(#dash-pub-hostinger-glow)" />
-
-  <!-- 3D Isometric Geometric Logo Mark (Hostinger Style) -->
-  <g transform="translate(10, 10)" filter="url(#dash-pub-subtle-shadow)">
-    <polygon points="40,2 74,21 40,40 6,21" fill="url(#dash-pub-hostinger-top)" />
-    <polygon points="6,21 40,40 40,58 20,47 20,73 6,65" fill="url(#dash-pub-hostinger-primary)" />
-    <polygon points="74,21 40,40 40,58 60,47 60,73 74,65" fill="url(#dash-pub-hostinger-mid)" />
-    <polygon points="40,40 54,48 40,56 26,48" fill="url(#dash-pub-hostinger-top)" opacity="0.95" />
-    <polygon points="40,56 54,48 54,68 40,78" fill="url(#dash-pub-hostinger-mid)" />
-    <polygon points="40,56 26,48 26,68 40,78" fill="url(#dash-pub-hostinger-primary)" />
-    <polygon points="6,65 20,73 40,78 40,82 6,68" fill="url(#dash-pub-hostinger-dark)" opacity="0.6" />
-    <polygon points="74,65 60,73 40,78 40,82 74,68" fill="url(#dash-pub-hostinger-dark)" opacity="0.85" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 32" width="100%" height="100%" fill="none">
+  <!-- Exact Hostinger-Style Minimalist Geometric Mark -->
+  <g fill="#FFFFFF">
+    <!-- Left Vertical Pillar -->
+    <rect x="0" y="2" width="6.5" height="28" rx="0.5" />
+    
+    <!-- Right Vertical Pillar -->
+    <rect x="23.5" y="2" width="6.5" height="28" rx="0.5" />
+    
+    <!-- Upper Slanted Bar -->
+    <polygon points="6.5,10.5 23.5,7 23.5,11.2 6.5,14.7" />
+    
+    <!-- Lower Slanted Bar -->
+    <polygon points="6.5,19.3 23.5,15.8 23.5,20 6.5,23.5" />
   </g>
 
-  <!-- Brand Typography: MrShahin -->
-  <text x="108" y="60" 
-        font-family="-apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', 'Outfit', 'Inter', sans-serif" 
-        font-size="44" 
-        font-weight="800" 
-        letter-spacing="-1px" 
-        fill="#FFFFFF">Mr</text>
-
-  <text x="178" y="60" 
-        font-family="-apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', 'Outfit', 'Inter', sans-serif" 
-        font-size="44" 
-        font-weight="800" 
-        letter-spacing="-1px" 
-        fill="url(#dash-pub-text-purple-grad)">Shahin</text>
-
-  <circle cx="308.5" cy="31" r="4.2" fill="#9D6BFF" filter="url(#dash-pub-subtle-shadow)" />
-
-  <g transform="translate(346, 36)">
-    <rect x="0" y="0" width="98" height="24" rx="6" fill="#673DE6" fill-opacity="0.18" stroke="#8C52FF" stroke-width="1.2" stroke-opacity="0.4" />
-    <text x="49" y="16" 
-          text-anchor="middle"
-          font-family="-apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', 'Inter', sans-serif" 
-          font-size="11" 
-          font-weight="700" 
-          letter-spacing="1.5px" 
-          fill="#C4A8FF">SAT</text>
-  </g>
+  <!-- Wordmark: MR.SHAHIN in exact Hostinger typography -->
+  <text 
+    x="44" 
+    y="23.5" 
+    font-family="-apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', 'Inter', 'Montserrat', 'Segoe UI', sans-serif" 
+    font-size="18.5" 
+    font-weight="800" 
+    letter-spacing="2.2px" 
+    fill="#FFFFFF"
+  >
+    MR.SHAHIN
+  </text>
 </svg>

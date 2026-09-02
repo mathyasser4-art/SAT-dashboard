@@ -1,14 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 44" width="100%" height="100%" fill="none">
-  <!-- Exact Geometric Origami M Mark from User Screenshot -->
+  <!-- Clean Geometric Origami M Mark - Zero Overlaps -->
   <g fill="#FFFFFF">
-    <polygon points="0,4 24,22 16,28 0,16" />
-    <polygon points="0,22 16,34 16,44 0,32" />
-    <polygon points="19,37 47,16 55,22 27,43" />
-    <polygon points="54,4 30,22 38,28 54,16" />
-    <polygon points="54,22 38,34 38,44 54,32" />
+    <polygon points="0,0 24,19 16,25 0,12" />
+    <polygon points="0,17 16,29 16,44 0,32" />
+    <polygon points="19,34 54,6 54,18 27,40" />
+    <polygon points="54,23 38,35 38,44 54,32" />
   </g>
 
-  <!-- Wordmark: MR.SHAHIN in exact Hostinger typography -->
+  <!-- Wordmark: MR.SHAHIN -->
   <text 
     x="70" 
     y="32.5" 

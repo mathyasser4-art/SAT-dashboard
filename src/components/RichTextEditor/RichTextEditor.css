@@ -22,6 +22,17 @@
 .rich-text-editor .ql-editor {
     min-height: 130px;
     line-height: 1.7;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    word-wrap: break-word !important;
+}
+
+.rich-text-editor .ql-editor .ql-formula {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    vertical-align: middle;
 }
 
 .rich-text-editor .ql-editor.ql-blank::before {

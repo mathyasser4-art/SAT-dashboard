@@ -1,6 +1,6 @@
-const URL = '/api/question/getQuestionDetails/'
+const URL = 'https://sat-backend-production.up.railway.app/question/getQuestionDetails/'
 
-const getQuestionDetails = (questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr) => {
+const getQuestionDetails = (questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr, setExplanation) => {
     setLoading(true)
     fetch(`${URL}${questionID}`, {
         method: 'GET',
@@ -11,19 +11,26 @@ const getQuestionDetails = (questionID, setQuestionDetails, setLoading, setQuest
             if (responseJson.message === 'success') {
                 setQuestionDetails(responseJson.question)
                 setQuestion(responseJson.question.question)
+                if (setExplanation) {
+                    setExplanation(responseJson.question.explanation || '')
+                }
                 setAllAnswer(responseJson.question.answer)
                 setQuestionPoint(responseJson.question.questionPoints)
                 setQuestionType(responseJson.question.typeOfAnswer)
                 if (responseJson.question.typeOfAnswer == 'MCQ') {
-                    const allMcqAnswers = [
-                        responseJson.question.correctAnswer,
-                        ...(responseJson.question.wrongAnswer || [])
-                    ].filter(Boolean)
-
-                    setMcqAnswerFs(allMcqAnswers[0] || '')
-                    setMcqAnswerSe(allMcqAnswers[1] || '')
-                    setMcqAnswerTh(allMcqAnswers[2] || '')
-                    setMcqAnswerFr(allMcqAnswers[3] || '')
+                    const wrongAnswers = responseJson.question.wrongAnswer
+                    for (let index = 0; index < wrongAnswers.length; index++) {
+                        const element = wrongAnswers[index];
+                        if (index == 0) {
+                            setMcqAnswerFs(element)
+                        } else if (index == 1) {
+                            setMcqAnswerSe(element)
+                        } else if (index == 2) {
+                            setMcqAnswerTh(element)
+                        } else {
+                            setMcqAnswerFr(element)
+                        }
+                    }
                 }
                 setLoading(false)
             } else {

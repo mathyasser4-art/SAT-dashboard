@@ -15,6 +15,7 @@ const AddQuestion = () => {
     const [question, setQuestion] = useState('')
     const [answer, setAnswer] = useState('')
     const [questionPoint, setQuestionPoint] = useState('')
+    const [explanation, setExplanation] = useState('')
     const [allAnswer, setAllAnswer] = useState([])
     const [questionPic, setQuestionPic] = useState()
     const [answerPic, setAnswerPic] = useState()
@@ -133,9 +134,10 @@ const AddQuestion = () => {
                 data.append('typeOfAnswer', 'Graph')
             }
             data.append('questionPoints', questionPoint)
+            data.append('explanation', explanation)
             data.append('chapter', chapterID)
             data.append('index', questionNum)
-            addQuestion(data, setserverOperationError, setServerOperationLoading, setQuesionAdded, setQuesionID, questionType, setQuesionGraphAdded)
+            addQuestion(data, setserverOperationError, setServerOperationLoading, (val) => { setQuesionAdded(val); if (questionType !== 'Graph Question') setQuesionFullAdded(val); }, setQuesionID, questionType, setQuesionGraphAdded)
         }
     }
 
@@ -164,6 +166,7 @@ const AddQuestion = () => {
 
     const newQuestion = () => {
         setQuestion('')
+        setExplanation('')
         setQuesionFullAdded(false)
         setAnswer('')
         setQuestionPoint('')
@@ -305,6 +308,17 @@ const AddQuestion = () => {
                         />
                     </div>
                 </div> : ''}
+                <div className="explanation-editor-wrapper" style={{ marginTop: '20px', marginBottom: '20px' }}>
+                    <p style={{ fontWeight: 600, color: '#334155', marginBottom: '8px', fontSize: '15px' }}>
+                        💡 Question Explanation (shown to students when solved)
+                    </p>
+                    <RichTextEditor
+                        value={explanation}
+                        onChange={setExplanation}
+                        placeholder="Type question explanation and model solution here. Click Σ to insert a math formula visually."
+                    />
+                </div>
+
                 <input type="text" placeholder='Enter the question points' value={questionPoint} onChange={e => setQuestionPoint(e.target.value)} />
                 <div className="d-flex">
                     <button className='button' onClick={addNewQuestion}>{(serverOperationLoading) ? <span className="button-loader"></span> : 'Add'}</button>
@@ -349,20 +363,6 @@ const AddQuestion = () => {
                         <button className='button answer-button' onClick={uploadAnswerGraphPic}>{(serverGraphLoading) ? <span className="button-loader"></span> : 'Upload Pictures'}</button>
                     </div>
                 </> : ""}
-                {(quesionAdded) ? <div className='correct d-flex align-items-center'>
-                    <img src={correctIcon} alt="" />
-                    <p>Question added success. you can add the answer model picture now.</p>
-                </div> : ''}
-                {(previewAnswerPic) ? <img className='preview-img' src={previewAnswerPic} alt="" /> : <label className={`${(quesionAdded) ? '' : 'answer-pic'}`}>
-                    <div>
-                        <i className="fa fa-camera" aria-hidden="true"></i>
-                        <p>Choose the answer picture</p>
-                    </div>
-                    {(quesionAdded) ? <input className='select-input' type="file" name='images' onChange={selectAnswerPic} accept='.png, .jpg, .jpeg, .webp' /> : ""}
-                </label>}
-                <div className="d-flex">
-                    <button className='button answer-button' onClick={uploadAnswerPic}>{(serverLoadingPic) ? <span className="button-loader"></span> : 'Add'}</button>
-                </div>
             </div>
             {/* add question popup start */}
             {(quesionFullAdded) ? <div className="add-question-popup question-popup d-flex justify-content-center align-items-center">

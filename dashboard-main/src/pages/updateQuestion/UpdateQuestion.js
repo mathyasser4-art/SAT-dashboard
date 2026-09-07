@@ -19,6 +19,7 @@ const UpdateQuestion = () => {
     const [question, setQuestion] = useState('')
     const [answer, setAnswer] = useState('')
     const [questionPoint, setQuestionPoint] = useState('')
+    const [explanation, setExplanation] = useState('')
     const [allAnswer, setAllAnswer] = useState([])
     const [questionPic, setQuestionPic] = useState()
     const [answerPic, setAnswerPic] = useState()
@@ -41,7 +42,7 @@ const UpdateQuestion = () => {
     }, [])
 
     const getQuestion = async () => {
-        await getQuestionDetails(questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr)
+        await getQuestionDetails(questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr, setExplanation)
     }
 
     // Strips HTML tags to check if editor content is effectively empty
@@ -101,6 +102,7 @@ const UpdateQuestion = () => {
                 data.append('wrongAnswer', mcqAnswerFr)
             }
             data.append('questionPoints', questionPoint)
+            data.append('explanation', explanation)
             updateQuestion(data, questionID, setserverOperationError, setServerOperationLoading, setQuesionAdded)
         }
     }
@@ -219,6 +221,16 @@ const UpdateQuestion = () => {
                         )
                     }) : ''}
                 </div>
+                <div className="explanation-editor-wrapper" style={{ marginTop: '20px', marginBottom: '20px' }}>
+                    <p style={{ fontWeight: 600, color: '#334155', marginBottom: '8px', fontSize: '15px' }}>
+                        💡 Question Explanation (shown to students when solved)
+                    </p>
+                    <RichTextEditor
+                        value={explanation}
+                        onChange={setExplanation}
+                        placeholder="Type question explanation and model solution here. Click Σ to insert a math formula visually."
+                    />
+                </div>
                 <input type="text" placeholder='Enter the question points' value={questionPoint} onChange={e => setQuestionPoint(e.target.value)} />
                 {(questionType == 'Graph') ? <div className="d-flex">
                     <img className='graph-preview graph-preview-fs' src={questionDetails.correctPicAnswer} alt="" />
@@ -234,22 +246,6 @@ const UpdateQuestion = () => {
                     <img src={correctIcon} alt="" />
                     <p>Question updated success.</p>
                 </div> : ''}
-                {(previewAnswerPic) ? <img className='preview-img' src={previewAnswerPic} alt="" /> : (questionDetails.answerPic) ? <div className='question-pic'>
-                    <img src={questionDetails.answerPic} alt="" />
-                    <label>
-                        <i className="fa fa-pencil" aria-hidden="true"></i>
-                        <input className='select-input' type="file" name='images' onChange={selectAnswerPic} accept='.png, .jpg, .jpeg, .webp' />
-                    </label>
-                </div> : <label>
-                    <div>
-                        <i className="fa fa-camera" aria-hidden="true"></i>
-                        <p>Choose the answer picture</p>
-                    </div>
-                    <input className='select-input' type="file" name='images' onChange={selectAnswerPic} accept='.png, .jpg, .jpeg, .webp' />
-                </label>}
-                <div className="d-flex">
-                    <button className='button answer-button' onClick={uploadAnswerPic}>{(serverLoadingPic) ? <span className="button-loader"></span> : 'Update'}</button>
-                </div>
             </div>
         </div>
     );

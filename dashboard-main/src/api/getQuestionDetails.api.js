@@ -1,6 +1,6 @@
 const URL = 'https://sat-backend-production.up.railway.app/question/getQuestionDetails/'
 
-const getQuestionDetails = (questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr) => {
+const getQuestionDetails = (questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr, setExplanation) => {
     setLoading(true)
     fetch(`${URL}${questionID}`, {
         method: 'GET',
@@ -11,6 +11,9 @@ const getQuestionDetails = (questionID, setQuestionDetails, setLoading, setQuest
             if (responseJson.message === 'success') {
                 setQuestionDetails(responseJson.question)
                 setQuestion(responseJson.question.question)
+                if (setExplanation) {
+                    setExplanation(responseJson.question.explanation || '')
+                }
                 setAllAnswer(responseJson.question.answer)
                 setQuestionPoint(responseJson.question.questionPoints)
                 setQuestionType(responseJson.question.typeOfAnswer)

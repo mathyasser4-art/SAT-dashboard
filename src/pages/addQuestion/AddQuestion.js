@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import TipTapEditor from '../../components/TipTapEditor/TipTapEditor'
+import RichTextEditor from '../../components/RichTextEditor/RichTextEditor';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import addQuestion from '../../api/addQuestion.api'
 import addAnswerPic from '../../api/addAnswerPic.api'
 import addGraphQuestion from '../../api/addGraphQuestion.api';
 import correctIcon from '../../correct-icon.png'
-import NumeralKeyboard from '../../components/NumeralKeyboard/NumeralKeyboard'
 import '../../reusable.css';
 import './AddQuestion.css'
 
@@ -16,6 +15,7 @@ const AddQuestion = () => {
     const [question, setQuestion] = useState('')
     const [answer, setAnswer] = useState('')
     const [questionPoint, setQuestionPoint] = useState('')
+    const [explanation, setExplanation] = useState('')
     const [allAnswer, setAllAnswer] = useState([])
     const [questionPic, setQuestionPic] = useState()
     const [answerPic, setAnswerPic] = useState()
@@ -42,10 +42,12 @@ const AddQuestion = () => {
     const [previewWrongAPTh, setPreviewWrongAPTh] = useState('')
     const [serverGraphError, setServerGraphError] = useState(null)
     const [serverGraphLoading, setServerGraphLoading] = useState(false)
-    const [activeAnswerField, setActiveAnswerField] = useState(null)
 
     const { chapterID, chapterName, questionTypeID, unitID, questionTypeName, subjectID, questionNum } = useParams()
     const navigate = useNavigate()
+
+    // Strips HTML tags to check if editor content is effectively empty
+    const isQuestionEmpty = (html) => !html || html.replace(/<(.|\n)*?>/g, '').trim() === ''
 
     const selectQuestionPic = (e) => {
         setQuestionPic(e.target.files[0])
@@ -84,33 +86,37 @@ const AddQuestion = () => {
     }
 
     const addAnswer = () => {
-        if (answer === '') return;
+        if (isQuestionEmpty(answer)) return;
         setAllAnswer(current => [...current, answer]);
-        setAnswer('');
-        setActiveAnswerField(null)
+        setAnswer(''); // ReactQuill is controlled – clears automatically
     }
 
     const removeAnswer = (item) => {
-        setAllAnswer(current => current.filter(e => e != item))
+        setAllAnswer(current => current.filter(e => e !== item))
     }
 
     const addNewQuestion = () => {
-        if (!question.trim() || questionPoint === '' || allAnswer.length === 0 && questionType === 'Essay Question'
-            || mcqAnswerFr === '' && questionType === 'MCQ Question' || mcqAnswerFs === '' && questionType === 'MCQ Question'
-            || mcqAnswerSe === '' && questionType === 'MCQ Question' || mcqAnswerTh === '' && questionType === 'MCQ Question') {
+        if (isQuestionEmpty(question) || questionPoint === ''
+            || (allAnswer.length === 0 && questionType === 'Essay Question')
+            || (isQuestionEmpty(mcqAnswerFr) && questionType === 'MCQ Question')
+            || (isQuestionEmpty(mcqAnswerFs) && questionType === 'MCQ Question')
+            || (isQuestionEmpty(mcqAnswerSe) && questionType === 'MCQ Question')
+            || (isQuestionEmpty(mcqAnswerTh) && questionType === 'MCQ Question')) {
             setserverOperationError('Enter the question data first!')
         } else {
             const data = new FormData()
-            if (questionPic)
+            if (questionPic) {
                 data.append('image', questionPic)
+            }
             data.append('question', question)
-            if (questionType == 'Essay Question') {
-                allAnswer.map(item => {
-                    data.append('answer', item)
+            if (questionType === 'Essay Question') {
+                allAnswer.forEach(item => {
+                    const cleanAnswer = item.replace(/<[^>]*>?/gm, '').trim();
+                    data.append('answer', cleanAnswer)
                 })
             }
-            if (questionType == 'MCQ Question') {
-                if (correctAnswer == '') {
+            if (questionType === 'MCQ Question') {
+                if (correctAnswer === '') {
                     data.append('correctAnswer', mcqAnswerFs)
                 } else {
                     data.append('correctAnswer', correctAnswer)
@@ -122,15 +128,16 @@ const AddQuestion = () => {
             }
             if (autoCorrect)
                 data.append('autoCorrect', true)
-            if (questionType == 'MCQ Question') {
+            if (questionType === 'MCQ Question') {
                 data.append('typeOfAnswer', 'MCQ')
-            } else if (questionType == 'Graph Question') {
+            } else if (questionType === 'Graph Question') {
                 data.append('typeOfAnswer', 'Graph')
             }
             data.append('questionPoints', questionPoint)
+            data.append('explanation', explanation)
             data.append('chapter', chapterID)
             data.append('index', questionNum)
-            addQuestion(data, setserverOperationError, setServerOperationLoading, setQuesionAdded, setQuesionID, questionType, setQuesionGraphAdded)
+            addQuestion(data, setserverOperationError, setServerOperationLoading, (val) => { setQuesionAdded(val); if (questionType !== 'Graph Question') setQuesionFullAdded(val); }, setQuesionID, questionType, setQuesionGraphAdded)
         }
     }
 
@@ -138,7 +145,7 @@ const AddQuestion = () => {
         if (answerPic) {
             const data = new FormData()
             data.append('image', answerPic)
-            addAnswerPic(data, quesionID, setserverOperationError, setServerLoadingPic, setQuesionFullAdded)
+            addAnswerPic(data, setserverOperationError, setServerLoadingPic, setQuesionFullAdded)
         } else {
             setserverOperationError('Upload the answer picture first!')
         }
@@ -159,6 +166,7 @@ const AddQuestion = () => {
 
     const newQuestion = () => {
         setQuestion('')
+        setExplanation('')
         setQuesionFullAdded(false)
         setAnswer('')
         setQuestionPoint('')
@@ -189,42 +197,10 @@ const AddQuestion = () => {
         setCorrectAnswer(value)
     }
 
-    const getActiveAnswerValue = () => {
-        if (activeAnswerField === 'essay') return answer
-        if (activeAnswerField === 'mcq-1') return mcqAnswerFs
-        if (activeAnswerField === 'mcq-2') return mcqAnswerSe
-        if (activeAnswerField === 'mcq-3') return mcqAnswerTh
-        if (activeAnswerField === 'mcq-4') return mcqAnswerFr
-        return ''
-    }
-
-    const setActiveAnswerValue = (value) => {
-        if (activeAnswerField === 'essay') setAnswer(value)
-        if (activeAnswerField === 'mcq-1') setMcqAnswerFs(value)
-        if (activeAnswerField === 'mcq-2') setMcqAnswerSe(value)
-        if (activeAnswerField === 'mcq-3') setMcqAnswerTh(value)
-        if (activeAnswerField === 'mcq-4') setMcqAnswerFr(value)
-    }
-
-    const insertNumeral = (numeral) => {
-        const currentValue = getActiveAnswerValue()
-        setActiveAnswerValue(`${currentValue}${numeral}`)
-    }
-
-    const backspaceNumeral = () => {
-        const currentValue = getActiveAnswerValue()
-        setActiveAnswerValue(currentValue.slice(0, -1))
-    }
-
-    const insertSpace = () => {
-        const currentValue = getActiveAnswerValue()
-        setActiveAnswerValue(`${currentValue} `)
-    }
-
     return (
         <div className="add-question">
             <div>
-                <p className='text-color head-title'>Add new question in <span>{(questionTypeName == 'Past Papers') ? 'exam' : 'chapter'}</span> (<span style={{ color: "rgb(56, 56, 238)" }}>{chapterName}</span>)</p>
+                <p className='text-color head-title'>Add new question in <span>{(questionTypeName === 'Past Papers') ? 'exam' : 'chapter'}</span> (<span style={{ color: "rgb(56, 56, 238)" }}>{chapterName}</span>)</p>
                 {(serverOperationError) ? <p className='text-error'>{serverOperationError}</p> : ''}
                 <fieldset>
                     <legend>Choose the type of question</legend>
@@ -255,131 +231,94 @@ const AddQuestion = () => {
                     </div>
                     <input className='select-input' type="file" name='images' onChange={selectQuestionPic} accept='.png, .jpg, .jpeg, .webp' />
                 </label>}
-                <div style={{ marginBottom: '20px' }}>
-                    <TipTapEditor
-                        content={question}
-                        onUpdate={setQuestion}
+
+                <div className="question-editor-wrapper">
+                    <RichTextEditor
+                        value={question}
+                        onChange={setQuestion}
                         placeholder="Type your question here. Click Σ to insert a math formula visually."
                     />
                 </div>
-                {(questionType == 'Essay Question') ? <>
+
+                {(questionType === 'Essay Question') ? <>
                     <div className="keyboard essay-answer">
                         <div className="essay-math-input">
-                            <input
-                                type="text"
-                                placeholder="Type the answer using English or Arabic numerals"
+                            <RichTextEditor
                                 value={answer}
-                                onFocus={() => setActiveAnswerField('essay')}
-                                onChange={e => setAnswer(e.target.value)}
+                                onChange={setAnswer}
+                                placeholder="Type the answer. Click Σ to insert a math formula visually."
                             />
-                            {activeAnswerField === 'essay' ? (
-                                <NumeralKeyboard
-                                    onInsert={insertNumeral}
-                                    onBackspace={backspaceNumeral}
-                                    onSpace={insertSpace}
-                                    onClose={() => setActiveAnswerField(null)}
-                                />
-                            ) : ''}
                         </div>
                         <li onClick={addAnswer}>+</li>
                     </div>
                     <div className='d-flex flex-wrap'>
-                        {(allAnswer.length != 0) ? allAnswer.map(item => {
+                        {(allAnswer.length !== 0) ? allAnswer.map((item, index) => {
                             return (
-                                <div className='answer-item' key={item}>
-                                    <p>{item}</p>
+                                <div className='answer-item' key={index}>
+                                    <p dangerouslySetInnerHTML={{ __html: item }} />
                                     <span onClick={() => removeAnswer(item)}>x</span>
                                 </div>
                             )
                         }) : ''}
                     </div>
-                </> : (questionType == "MCQ Question") ? <div className="keyboard mcq-answer d-flex">
+                </> : (questionType === "MCQ Question") ? <div className="keyboard mcq-answer d-flex">
 
                     <div className='mcq-input'>
                         <div className='d-flex align-items-center answer-toggel'>
-                            <input type="radio" id="berries_3" defaultChecked value={mcqAnswerFs} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                            <input type="radio" id="correct_1" defaultChecked value={mcqAnswerFs} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 1 (Correct answer)</p>
                         </div>
-                        <input
-                            type="text"
-                            placeholder="Type answer 1"
+                        <RichTextEditor
                             value={mcqAnswerFs}
-                            onFocus={() => setActiveAnswerField('mcq-1')}
-                            onChange={e => setMcqAnswerFs(e.target.value)}
+                            onChange={setMcqAnswerFs}
+                            placeholder="Type answer 1"
                         />
-                        {activeAnswerField === 'mcq-1' ? (
-                            <NumeralKeyboard
-                                onInsert={insertNumeral}
-                                onBackspace={backspaceNumeral}
-                                onSpace={insertSpace}
-                                onClose={() => setActiveAnswerField(null)}
-                            />
-                        ) : ''}
                     </div>
                     <div className='mcq-input'>
                         <div className='d-flex align-items-center answer-toggel'>
-                            <input type="radio" id="berries_3" value={mcqAnswerSe} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                            <input type="radio" id="correct_2" value={mcqAnswerSe} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 2 (Correct answer)</p>
                         </div>
-                        <input
-                            type="text"
-                            placeholder="Type answer 2"
+                        <RichTextEditor
                             value={mcqAnswerSe}
-                            onFocus={() => setActiveAnswerField('mcq-2')}
-                            onChange={e => setMcqAnswerSe(e.target.value)}
+                            onChange={setMcqAnswerSe}
+                            placeholder="Type answer 2"
                         />
-                        {activeAnswerField === 'mcq-2' ? (
-                            <NumeralKeyboard
-                                onInsert={insertNumeral}
-                                onBackspace={backspaceNumeral}
-                                onSpace={insertSpace}
-                                onClose={() => setActiveAnswerField(null)}
-                            />
-                        ) : ''}
                     </div>
                     <div className='mcq-input'>
                         <div className='d-flex align-items-center answer-toggel'>
-                            <input type="radio" id="berries_3" value={mcqAnswerTh} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                            <input type="radio" id="correct_3" value={mcqAnswerTh} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 3 (Correct answer)</p>
                         </div>
-                        <input
-                            type="text"
-                            placeholder="Type answer 3"
+                        <RichTextEditor
                             value={mcqAnswerTh}
-                            onFocus={() => setActiveAnswerField('mcq-3')}
-                            onChange={e => setMcqAnswerTh(e.target.value)}
+                            onChange={setMcqAnswerTh}
+                            placeholder="Type answer 3"
                         />
-                        {activeAnswerField === 'mcq-3' ? (
-                            <NumeralKeyboard
-                                onInsert={insertNumeral}
-                                onBackspace={backspaceNumeral}
-                                onSpace={insertSpace}
-                                onClose={() => setActiveAnswerField(null)}
-                            />
-                        ) : ''}
                     </div>
                     <div className='mcq-input'>
                         <div className='d-flex align-items-center answer-toggel'>
-                            <input type="radio" id="berries_3" value={mcqAnswerFr} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
+                            <input type="radio" id="correct_4" value={mcqAnswerFr} name="coorect-answer" onChange={e => checkedCorrecrAnswer(e.target.value)} />
                             <p>Answer 4 (Correct answer)</p>
                         </div>
-                        <input
-                            type="text"
-                            placeholder="Type answer 4"
+                        <RichTextEditor
                             value={mcqAnswerFr}
-                            onFocus={() => setActiveAnswerField('mcq-4')}
-                            onChange={e => setMcqAnswerFr(e.target.value)}
+                            onChange={setMcqAnswerFr}
+                            placeholder="Type answer 4"
                         />
-                        {activeAnswerField === 'mcq-4' ? (
-                            <NumeralKeyboard
-                                onInsert={insertNumeral}
-                                onBackspace={backspaceNumeral}
-                                onSpace={insertSpace}
-                                onClose={() => setActiveAnswerField(null)}
-                            />
-                        ) : ''}
                     </div>
                 </div> : ''}
+                <div className="explanation-editor-wrapper" style={{ marginTop: '20px', marginBottom: '20px' }}>
+                    <p style={{ fontWeight: 600, color: '#334155', marginBottom: '8px', fontSize: '15px' }}>
+                        💡 Question Explanation (shown to students when solved)
+                    </p>
+                    <RichTextEditor
+                        value={explanation}
+                        onChange={setExplanation}
+                        placeholder="Type question explanation and model solution here. Click Σ to insert a math formula visually."
+                    />
+                </div>
+
                 <input type="text" placeholder='Enter the question points' value={questionPoint} onChange={e => setQuestionPoint(e.target.value)} />
                 <div className="d-flex">
                     <button className='button' onClick={addNewQuestion}>{(serverOperationLoading) ? <span className="button-loader"></span> : 'Add'}</button>
@@ -389,7 +328,7 @@ const AddQuestion = () => {
                     <img src={correctIcon} alt="" />
                     <p>Question added success. you can add the graph answer pictures now.</p>
                 </div> : ''}
-                {(questionType == "Graph Question") ? <><div className="graph-container d-flex">
+                {(questionType === "Graph Question") ? <><div className="graph-container d-flex">
                     {(previewCorrectAP) ? <img src={previewCorrectAP} className="graph-preview graph-preview-fs" alt="" /> : <label className={`${(quesionGraphAdded) ? '' : 'answer-pic'} graph-img graph-img-fs`}>
                         <div>
                             <i className="fa fa-camera" aria-hidden="true"></i>
@@ -424,20 +363,6 @@ const AddQuestion = () => {
                         <button className='button answer-button' onClick={uploadAnswerGraphPic}>{(serverGraphLoading) ? <span className="button-loader"></span> : 'Upload Pictures'}</button>
                     </div>
                 </> : ""}
-                {(quesionAdded) ? <div className='correct d-flex align-items-center'>
-                    <img src={correctIcon} alt="" />
-                    <p>Question added success. you can add the answer model picture now.</p>
-                </div> : ''}
-                {(previewAnswerPic) ? <img className='preview-img' src={previewAnswerPic} alt="" /> : <label className={`${(quesionAdded) ? '' : 'answer-pic'}`}>
-                    <div>
-                        <i className="fa fa-camera" aria-hidden="true"></i>
-                        <p>Choose the answer picture</p>
-                    </div>
-                    {(quesionAdded) ? <input className='select-input' type="file" name='images' onChange={selectAnswerPic} accept='.png, .jpg, .jpeg, .webp' /> : ""}
-                </label>}
-                <div className="d-flex">
-                    <button className='button answer-button' onClick={uploadAnswerPic}>{(serverLoadingPic) ? <span className="button-loader"></span> : 'Add'}</button>
-                </div>
             </div>
             {/* add question popup start */}
             {(quesionFullAdded) ? <div className="add-question-popup question-popup d-flex justify-content-center align-items-center">
@@ -446,7 +371,7 @@ const AddQuestion = () => {
                     <p className='text-color'>Success</p>
                     <p className='text-color'>Congratulations, the full question has been successfully added.</p>
                     <button className='button' onClick={newQuestion}>Add another question</button>
-                    <Link to={`/chapter/${questionTypeName}/${chapterID}/${questionTypeID}/${unitID}/${subjectID}`}><button className='button cancel-button'>Redirect to <span>{(questionTypeName == 'Past Papers') ? 'exam' : 'chapter'}</span> page</button></Link>
+                    <Link to={`/chapter/${questionTypeName}/${chapterID}/${questionTypeID}/${unitID}/${subjectID}`}><button className='button cancel-button'>Redirect to <span>{(questionTypeName === 'Past Papers') ? 'exam' : 'chapter'}</span> page</button></Link>
                 </div>
             </div> : ''}
             {/* add question popup end */}

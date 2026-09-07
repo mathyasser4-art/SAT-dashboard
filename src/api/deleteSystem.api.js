@@ -1,18 +1,31 @@
 const URL = '/api/system/deleteSystem';
 
 const deleteSystem = (systemID, setserverOperationError, setServerOperationLoading, setAllSystem) => {
-
-
     setServerOperationLoading(true);
+    setserverOperationError(null);
+
+    const Token = localStorage.getItem('O_authDB');
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+    if (Token && Token !== 'null' && Token !== 'undefined' && Token !== '') {
+        headers['authorization'] = `pracYas09${Token}`;
+    }
+
     fetch(`${URL}/${systemID}`, {
         method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers
     })
-        .then((response) => response.json())
-        .then((responseJson) => {
-            if (responseJson.message === 'success') {
+        .then(async (response) => {
+            const text = await response.text();
+            let responseJson;
+            try {
+                responseJson = JSON.parse(text);
+            } catch (err) {
+                throw new Error(`Server returned status ${response.status}. Please check connection or backend routes.`);
+            }
+
+            if (response.ok && responseJson.message === 'success') {
                 setAllSystem(responseJson.allSystem || []);
                 setServerOperationLoading(false);
                 setserverOperationError(null);

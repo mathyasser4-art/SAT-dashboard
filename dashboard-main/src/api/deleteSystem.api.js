@@ -15,15 +15,22 @@ const deleteSystem = (systemID, setserverOperationError, setServerOperationLoadi
         method: 'DELETE',
         headers: getHeaders(true),
     })
-        .then((response) => response.json())
-        .then((responseJson) => {
-            if (responseJson.message === 'success') {
-                document.querySelector('.delete-system-popup').classList.replace('d-flex', 'd-none');
+        .then(async (response) => {
+            const text = await response.text();
+            let responseJson;
+            try {
+                responseJson = JSON.parse(text);
+            } catch (err) {
+                throw new Error(`Server returned status ${response.status}. Please check connection or backend routes.`);
+            }
+
+            if (response.ok && responseJson.message === 'success') {
+                document.querySelector('.delete-system-popup')?.classList.replace('d-flex', 'd-none');
                 setServerOperationLoading(false);
                 setserverOperationError(null);
-                setAllSystem(responseJson.allSystem);
+                setAllSystem(responseJson.allSystem || []);
             } else {
-                setserverOperationError(responseJson.message);
+                setserverOperationError(responseJson.message || 'Failed to delete the system.');
                 setServerOperationLoading(false);
             }
         })

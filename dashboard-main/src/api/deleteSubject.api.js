@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/school/deleteSchool';
+const URL = 'https://sat-backend-production.up.railway.app/subject/deleteSubject';
 
 const getHeaders = (hasJson) => {
     const Token = localStorage.getItem('O_authDB');
@@ -10,9 +10,9 @@ const getHeaders = (hasJson) => {
     return headers;
 };
 
-const deleteSchool = (schoolID, setserverOperationError, setServerOperationLoading, setAllSchools) => {
+const deleteSubject = (subjectID, setserverOperationError, setServerOperationLoading, setAllSystem) => {
     setServerOperationLoading(true);
-    fetch(`${URL}/${schoolID}`, {
+    fetch(`${URL}/${subjectID}`, {
         method: 'DELETE',
         headers: getHeaders(true),
     })
@@ -26,12 +26,12 @@ const deleteSchool = (schoolID, setserverOperationError, setServerOperationLoadi
             }
 
             if (response.ok && responseJson.message === 'success') {
-                setAllSchools(responseJson.allSchools);
+                document.querySelector('.delete-subject-popup')?.classList.replace('d-flex', 'd-none');
                 setServerOperationLoading(false);
                 setserverOperationError(null);
-                document.querySelector('.delete-school-popup')?.classList.replace('d-flex', 'd-none');
+                setAllSystem(responseJson.allSystem || []);
             } else {
-                setserverOperationError(responseJson.message || 'Failed to delete the school.');
+                setserverOperationError(responseJson.message || 'Failed to delete the subject.');
                 setServerOperationLoading(false);
             }
         })
@@ -41,4 +41,4 @@ const deleteSchool = (schoolID, setserverOperationError, setServerOperationLoadi
         });
 };
 
-export default deleteSchool;
+export default deleteSubject;

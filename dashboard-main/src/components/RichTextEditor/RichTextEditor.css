@@ -22,6 +22,9 @@
 .rich-text-editor .ql-editor {
     min-height: 130px;
     line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .rich-text-editor .ql-editor img {

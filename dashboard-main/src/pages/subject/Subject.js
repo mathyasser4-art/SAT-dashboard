@@ -5,6 +5,7 @@ import addSystem from '../../api/addSystem.api';
 import getSystem from '../../api/getSystem.api';
 import updateSystem from '../../api/updateSystem.api'
 import deleteSystem from '../../api/deleteSystem.api'
+import deleteSubject from '../../api/deleteSubject.api'
 import updateSubject from '../../api/updateSubject.api';
 import '../../reusable.css'
 import './Subject.css'
@@ -132,6 +133,22 @@ function Subject() {
     }
     // delete system func end
 
+    // delete subject func start
+    const openDeleteSubPopup = (subjectID) => {
+        setSubjectID(subjectID)
+        setserverOperationError(null)
+        document.querySelector('.delete-subject-popup').classList.replace('d-none', 'd-flex');
+    }
+
+    const closeDeleteSubPopup = () => {
+        document.querySelector('.delete-subject-popup').classList.replace('d-flex', 'd-none');
+    }
+
+    const handleDeleteSubject = () => {
+        deleteSubject(subjectID, setserverOperationError, setServerOperationLoading, setAllSystem)
+    }
+    // delete subject func end
+
     if (loading) return (<div className='loading-container'><div className='d-flex justify-content-center'><span className="page-loader"></span></div></div>)
 
     return (
@@ -157,6 +174,7 @@ function Subject() {
                                     <div className='subject-cover d-flex justify-content-space-between align-items-center'>
                                         <Link key={subItem._id} to={`/unit/${questionTypeName}/${questionTypeID}/${subItem._id}`}><p className='subject-name'>{subItem.subjectName}</p></Link>
                                         <i onClick={() => openUpdateSubPopup(subItem.subjectName, subItem._id)} className="fa fa-pencil" aria-hidden="true"></i>
+                                        <i onClick={() => openDeleteSubPopup(subItem._id)} className="fa fa-trash" style={{color: '#ff4d4f', marginLeft: '8px'}} aria-hidden="true"></i>
                                     </div>
                                 )
                             })}
@@ -231,6 +249,18 @@ function Subject() {
                 </div>
             </div>
             {/* delete system popup end */}
+
+            {/* delete subject popup start */}
+            <div className="delete-subject-popup subject-popup d-none justify-content-center align-items-center">
+                <div>
+                    <p className='text-color'>Delete Subject</p>
+                    <p>Are you sure you want to delete this subject? All its units and questions will be removed.</p>
+                    {(serverOperationError) ? <p className='text-error'>{serverOperationError}</p> : ''}
+                    <button className='button' style={{background: '#ff4d4f'}} onClick={handleDeleteSubject}>{(serverOperationLoading) ? <span className="button-loader"></span> : 'Delete'}</button>
+                    <button className='button' onClick={closeDeleteSubPopup}>Cancel</button>
+                </div>
+            </div>
+            {/* delete subject popup end */}
 
         </div>
     )

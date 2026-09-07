@@ -1,6 +1,7 @@
 const URL = 'https://sat-backend-production.up.railway.app/system/deleteSystem';
-const Token = localStorage.getItem('O_authDB');
+
 const getHeaders = (hasJson) => {
+    const Token = localStorage.getItem('O_authDB');
     const headers = {};
     if (hasJson) headers['Content-Type'] = 'application/json';
     if (Token && Token !== 'null' && Token !== 'undefined' && Token !== '') {

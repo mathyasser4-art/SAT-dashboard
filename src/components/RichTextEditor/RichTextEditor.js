@@ -34,6 +34,7 @@ const MQ_OPERATORS = [
     ['\\leq',           '\\leq'],
     ['\\geq',           '\\geq'],
     ['\\neq',           '\\neq'],
+    ['x^\\circ',        '^{\\circ}'],
     ['\\pi',            '\\pi'],
     ['\\infty',         '\\infty'],
 ];
@@ -48,6 +49,15 @@ const modules = {
 };
 
 const formats = ['bold', 'italic', 'underline', 'list', 'bullet', 'formula'];
+
+// Helper to normalize corrupted degree LaTeX before Quill reads data-value
+const sanitizeFormulaValues = (html) => {
+    if (!html || typeof html !== 'string') return html;
+    return html.replace(/data-value="([^"]*)"/g, (_, formula) => {
+        const cleaned = formula.replace(/\^c\s*irc\b/g, '^{\\circ}').replace(/\^circ\b/g, '^{\\circ}');
+        return `data-value="${cleaned}"`;
+    });
+};
 
 /**
  * RichTextEditor
@@ -73,12 +83,14 @@ const RichTextEditor = ({ value, onChange, placeholder }) => {
         }
     }, []);
 
+    const safeValue = sanitizeFormulaValues(value);
+
     return (
         <div className="rich-text-editor">
             <ReactQuill
                 ref={quillRef}
                 theme="snow"
-                value={value}
+                value={safeValue}
                 onChange={onChange}
                 modules={modules}
                 formats={formats}

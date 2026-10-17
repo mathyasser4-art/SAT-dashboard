@@ -42,8 +42,8 @@ const Navbar = () => {
                     />
                 </Link>
                 <div className='d-flex align-items-center school'>
-                    <Link to={'/reportedQuestions'} className="reports-nav-item" title="Question Revision Queue">
-                        <i className="fa fa-flag" aria-hidden="true" style={{ color: pendingReportsCount > 0 ? '#ef4444' : '#64748b' }}></i>
+                    <Link to={'/reportedQuestions'} className="reports-nav-item" title="Reported Questions (Revision Queue)">
+                        <i className="fa fa-flag" aria-hidden="true" style={{ color: '#ef4444' }}></i>
                         {pendingReportsCount > 0 && (
                             <span className="reports-nav-badge">{pendingReportsCount}</span>
                         )}

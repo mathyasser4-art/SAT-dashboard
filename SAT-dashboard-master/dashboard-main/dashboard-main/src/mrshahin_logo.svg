@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 44" width="100%" height="100%" fill="none">
+  <!-- Clean Geometric Origami M Mark - Zero Overlaps -->
+  <g fill="#FFFFFF">
+    <polygon points="0,0 24,19 16,25 0,12" />
+    <polygon points="0,17 16,29 16,44 0,32" />
+    <polygon points="19,34 54,6 54,18 27,40" />
+    <polygon points="54,23 38,35 38,44 54,32" />
+  </g>
+
+  <!-- Wordmark: MR.SHAHIN -->
+  <text 
+    x="70" 
+    y="32.5" 
+    font-family="-apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', 'Inter', 'Montserrat', 'Segoe UI', sans-serif" 
+    font-size="28.5" 
+    font-weight="900" 
+    letter-spacing="1.8px" 
+    fill="#FFFFFF"
+  >
+    MR.SHAHIN
+  </text>
+</svg>

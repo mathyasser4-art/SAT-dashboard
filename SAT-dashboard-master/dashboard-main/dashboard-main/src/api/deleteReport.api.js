@@ -1,4 +1,4 @@
-const URL = '/api/report/deleteReport/';
+const URL = 'https://sat-backend-production.up.railway.app/report/deleteReport/';
 
 const deleteReport = (reportID, onSuccess, onError, setLoading) => {
     if (setLoading) setLoading(true);
@@ -14,7 +14,14 @@ const deleteReport = (reportID, onSuccess, onError, setLoading) => {
         method: 'DELETE',
         headers
     })
-        .then((response) => response.json())
+        .then(async (response) => {
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                throw new Error(`Server returned status ${response.status}`);
+            }
+        })
         .then((responseJson) => {
             if (responseJson.message === 'success') {
                 if (onSuccess) onSuccess();

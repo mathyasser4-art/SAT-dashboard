@@ -1,4 +1,4 @@
-const URL = '/api/report/all';
+const URL = 'https://sat-backend-production.up.railway.app/report/all';
 
 const getReportedQuestions = (status = 'pending', setReports, setLoading, setCounts, setError) => {
     if (setLoading) setLoading(true);
@@ -15,7 +15,14 @@ const getReportedQuestions = (status = 'pending', setReports, setLoading, setCou
         method: 'GET',
         headers
     })
-        .then((response) => response.json())
+        .then(async (response) => {
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                throw new Error(`Server returned status ${response.status}`);
+            }
+        })
         .then((responseJson) => {
             if (responseJson.message === 'success') {
                 if (setReports) setReports(responseJson.reports || []);

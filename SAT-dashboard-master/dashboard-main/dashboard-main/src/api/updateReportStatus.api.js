@@ -1,4 +1,4 @@
-const URL = '/api/report/updateStatus/';
+const URL = 'https://sat-backend-production.up.railway.app/report/updateStatus/';
 
 const updateReportStatus = (reportID, status, resolutionNote, onSuccess, onError, setLoading) => {
     if (setLoading) setLoading(true);
@@ -15,7 +15,14 @@ const updateReportStatus = (reportID, status, resolutionNote, onSuccess, onError
         headers,
         body: JSON.stringify({ status, resolutionNote })
     })
-        .then((response) => response.json())
+        .then(async (response) => {
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                throw new Error(`Server returned status ${response.status}`);
+            }
+        })
         .then((responseJson) => {
             if (responseJson.message === 'success') {
                 if (onSuccess) onSuccess(responseJson.report);

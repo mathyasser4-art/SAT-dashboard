@@ -1,13 +1,20 @@
-const URL = '/api/report/summary';
+const URL = 'https://sat-backend-production.up.railway.app/report/summary';
 
 const getReportSummary = (setPendingCount) => {
     fetch(URL, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     })
-        .then((response) => response.json())
+        .then(async (response) => {
+            const text = await response.text();
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                return null;
+            }
+        })
         .then((responseJson) => {
-            if (responseJson.message === 'success' && setPendingCount) {
+            if (responseJson && responseJson.message === 'success' && setPendingCount) {
                 setPendingCount(responseJson.pendingCount || 0);
             }
         })

@@ -5,6 +5,8 @@ import getQuestionDetails from '../../api/getQuestionDetails.api'
 import updateQuestion from '../../api/updateQuestion.api'
 import addAnswerPic from '../../api/addAnswerPic.api'
 import updateAutoCorrect from '../../api/updateAutoCorrect.api'
+import getQuestionReports from '../../api/getQuestionReports.api'
+import resolveQuestionReports from '../../api/resolveQuestionReports.api'
 import correctIcon from '../../correct-icon.png'
 import '../../reusable.css'
 import './UpdateQuestion.css'
@@ -19,6 +21,7 @@ const UpdateQuestion = () => {
     const [question, setQuestion] = useState('')
     const [answer, setAnswer] = useState('')
     const [questionPoint, setQuestionPoint] = useState('')
+    const [explanation, setExplanation] = useState('')
     const [allAnswer, setAllAnswer] = useState([])
     const [questionPic, setQuestionPic] = useState()
     const [answerPic, setAnswerPic] = useState()
@@ -32,16 +35,20 @@ const UpdateQuestion = () => {
     const [mcqAnswerTh, setMcqAnswerTh] = useState('')
     const [mcqAnswerFr, setMcqAnswerFr] = useState('')
     const [correctAnswer, setCorrectAnswer] = useState('')
+    const [questionReports, setQuestionReports] = useState([])
 
     const { questionID, questionTypeID, unitID, questionTypeName, subjectID } = useParams()
     const navigate = useNavigate()
 
     useEffect(() => {
         getQuestion()
-    }, [])
+        if (questionID) {
+            getQuestionReports(questionID, setQuestionReports)
+        }
+    }, [questionID])
 
     const getQuestion = async () => {
-        await getQuestionDetails(questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr)
+        await getQuestionDetails(questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr, setExplanation)
     }
 
     // Strips HTML tags to check if editor content is effectively empty
@@ -79,12 +86,14 @@ const UpdateQuestion = () => {
             setserverOperationError('Enter the question data first!')
         } else {
             const data = new FormData()
-            if (questionPic)
+            if (questionPic) {
                 data.append('image', questionPic)
+            }
             data.append('question', question)
             if (questionType == 'Essay') {
                 allAnswer.map(item => {
-                    data.append('answer', item)
+                    const cleanAnswer = item.replace(/<[^>]*>?/gm, '').trim();
+                    data.append('answer', cleanAnswer)
                 })
             }
             if (questionType == 'MCQ') {
@@ -99,7 +108,15 @@ const UpdateQuestion = () => {
                 data.append('wrongAnswer', mcqAnswerFr)
             }
             data.append('questionPoints', questionPoint)
-            updateQuestion(data, questionID, setserverOperationError, setServerOperationLoading, setQuesionAdded)
+            data.append('explanation', explanation)
+            updateQuestion(data, questionID, setserverOperationError, setServerOperationLoading, (val) => {
+                setQuesionAdded(val)
+                if (val) {
+                    resolveQuestionReports(questionID, 'Resolved by admin during question revision', () => {
+                        setQuestionReports([])
+                    })
+                }
+            })
         }
     }
 
@@ -127,6 +144,42 @@ const UpdateQuestion = () => {
         <div className="update-question">
             <div>
                 <p className='text-color head-title'>Update the question</p>
+                {questionReports.length > 0 && (
+                    <div style={{
+                        background: '#fff1f2',
+                        border: '1.5px solid #fecdd3',
+                        borderLeft: '5px solid #e11d48',
+                        borderRadius: '8px',
+                        padding: '14px 18px',
+                        margin: '16px 0 20px 0'
+                    }}>
+                        <div className="d-flex justify-content-space-between align-items-center" style={{ marginBottom: '8px' }}>
+                            <strong style={{ color: '#be123c', fontSize: '14px' }}>
+                                <i className="fa fa-flag" aria-hidden="true" style={{ marginRight: '8px' }}></i>
+                                Student Problem Reports ({questionReports.length})
+                            </strong>
+                            <button
+                                type="button"
+                                className="button"
+                                style={{ padding: '4px 12px', fontSize: '12px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                                onClick={() => {
+                                    resolveQuestionReports(questionID, 'Resolved by admin during question revision', () => {
+                                        setQuestionReports([]);
+                                    });
+                                }}
+                            >
+                                ✓ Mark Reports as Resolved
+                            </button>
+                        </div>
+                        <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', color: '#881337', lineHeight: '1.6' }}>
+                            {questionReports.map(r => (
+                                <li key={r._id}>
+                                    <strong>{r.reason}:</strong> {r.comment ? `"${r.comment}"` : <em>(no comment)</em>} &bull; <small>by {r.reporterName || 'Student'} ({new Date(r.createdAt).toLocaleDateString()})</small>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
                 {(serverOperationError) ? <p className='text-error'>{serverOperationError}</p> : ''}
                 {(previewQuestionPic) ? <img className='preview-img' src={previewQuestionPic} alt="" /> : (questionDetails.questionPic) ? <div className='question-pic'>
                     <img src={questionDetails.questionPic} alt="" />
@@ -217,6 +270,16 @@ const UpdateQuestion = () => {
                         )
                     }) : ''}
                 </div>
+                <div className="explanation-editor-wrapper" style={{ marginTop: '20px', marginBottom: '20px' }}>
+                    <p style={{ fontWeight: 600, color: '#334155', marginBottom: '8px', fontSize: '15px' }}>
+                        💡 Question Explanation (shown to students when solved)
+                    </p>
+                    <RichTextEditor
+                        value={explanation}
+                        onChange={setExplanation}
+                        placeholder="Type question explanation and model solution here. Click Σ to insert a math formula visually."
+                    />
+                </div>
                 <input type="text" placeholder='Enter the question points' value={questionPoint} onChange={e => setQuestionPoint(e.target.value)} />
                 {(questionType == 'Graph') ? <div className="d-flex">
                     <img className='graph-preview graph-preview-fs' src={questionDetails.correctPicAnswer} alt="" />
@@ -226,28 +289,16 @@ const UpdateQuestion = () => {
                 </div> : ""}
                 <div className="d-flex">
                     <button className='button' onClick={handleUpadteQuestion}>{(serverOperationLoading) ? <span className="button-loader"></span> : 'Update'}</button>
-                    <Link to={`/chapter/${questionTypeName}/${questionDetails.chapter}/${questionTypeID}/${unitID}/${subjectID}`}><button className='button cancel-button'>Cancel</button></Link>
+                    {questionTypeName ? (
+                        <Link to={`/chapter/${questionTypeName}/${questionDetails.chapter}/${questionTypeID}/${unitID}/${subjectID}`}><button className='button cancel-button'>Cancel</button></Link>
+                    ) : (
+                        <button className='button cancel-button' type="button" onClick={() => navigate(-1)}>Cancel</button>
+                    )}
                 </div>
                 {(quesionAdded) ? <div className='correct d-flex align-items-center'>
                     <img src={correctIcon} alt="" />
                     <p>Question updated success.</p>
                 </div> : ''}
-                {(previewAnswerPic) ? <img className='preview-img' src={previewAnswerPic} alt="" /> : (questionDetails.answerPic) ? <div className='question-pic'>
-                    <img src={questionDetails.answerPic} alt="" />
-                    <label>
-                        <i className="fa fa-pencil" aria-hidden="true"></i>
-                        <input className='select-input' type="file" name='images' onChange={selectAnswerPic} accept='.png, .jpg, .jpeg, .webp' />
-                    </label>
-                </div> : <label>
-                    <div>
-                        <i className="fa fa-camera" aria-hidden="true"></i>
-                        <p>Choose the answer picture</p>
-                    </div>
-                    <input className='select-input' type="file" name='images' onChange={selectAnswerPic} accept='.png, .jpg, .jpeg, .webp' />
-                </label>}
-                <div className="d-flex">
-                    <button className='button answer-button' onClick={uploadAnswerPic}>{(serverLoadingPic) ? <span className="button-loader"></span> : 'Update'}</button>
-                </div>
             </div>
         </div>
     );

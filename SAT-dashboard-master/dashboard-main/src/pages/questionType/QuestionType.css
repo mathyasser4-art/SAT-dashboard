@@ -1,3 +1,77 @@
-.question-type-container button{
+.question-type-container button {
     margin: 0.7rem 0rem;
+    min-width: 280px;
+    padding: 0.9rem 1.8rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
 }
+
+.question-type-container button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(3, 3, 173, 0.25);
+}
+
+.question-type-divider {
+    width: 100px;
+    height: 2px;
+    background: #e2e8f0;
+    margin: 1rem 0;
+    border-radius: 2px;
+}
+
+.reported-questions-link {
+    text-decoration: none;
+}
+
+.reported-questions-home-btn {
+    background: #ffffff !important;
+    color: #dc2626 !important;
+    border: 2px solid #fecaca !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12) !important;
+}
+
+.reported-questions-home-btn i {
+    color: #ef4444;
+    font-size: 1.25rem;
+}
+
+.reported-questions-home-btn:hover {
+    background: #fef2f2 !important;
+    border-color: #ef4444 !important;
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.25) !important;
+    transform: translateY(-2px);
+}
+
+.home-pending-badge {
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 9999px;
+    letter-spacing: 0.3px;
+    animation: homeBadgePulse 2s infinite;
+}
+
+.home-queue-badge {
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 9999px;
+}
+
+@keyframes homeBadgePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.06);
+    }
+}

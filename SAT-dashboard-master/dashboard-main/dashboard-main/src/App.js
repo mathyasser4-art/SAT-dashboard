@@ -10,6 +10,7 @@ import Subject from './pages/subject/Subject'
 import School from './pages/school/School'
 import Users from './pages/users/Users'
 import AiGenerate from './pages/aiGenerate/AiGenerate'
+import ReportedQuestions from './pages/reportedQuestions/ReportedQuestions'
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
         <Route path='/chapter/:questionTypeName/:chapterID/:questionTypeID/:unitID/:subjectID' element={<Chapter />} />
         <Route path='/addQuestion/:questionTypeName/:chapterName/:chapterID/:questionTypeID/:unitID/:subjectID/:questionNum' element={<AddQuestion />} />
         <Route path='/updateQuestion/:questionTypeName/:questionID/:questionTypeID/:unitID/:subjectID' element={<UpdateQuestion />} />
+        <Route path='/updateQuestion/:questionID' element={<UpdateQuestion />} />
+        <Route path='/reportedQuestions' element={<ReportedQuestions />} />
         <Route path='/school' element={<School />} />
         <Route path='/users' element={<Users />} />
         <Route path='/aiGenerate/:questionTypeName/:chapterName/:chapterID/:questionTypeID/:unitID/:subjectID' element={<AiGenerate />} />

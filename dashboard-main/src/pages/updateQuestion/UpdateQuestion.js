@@ -5,6 +5,8 @@ import getQuestionDetails from '../../api/getQuestionDetails.api'
 import updateQuestion from '../../api/updateQuestion.api'
 import addAnswerPic from '../../api/addAnswerPic.api'
 import updateAutoCorrect from '../../api/updateAutoCorrect.api'
+import getQuestionReports from '../../api/getQuestionReports.api'
+import resolveQuestionReports from '../../api/resolveQuestionReports.api'
 import correctIcon from '../../correct-icon.png'
 import '../../reusable.css'
 import './UpdateQuestion.css'
@@ -33,13 +35,17 @@ const UpdateQuestion = () => {
     const [mcqAnswerTh, setMcqAnswerTh] = useState('')
     const [mcqAnswerFr, setMcqAnswerFr] = useState('')
     const [correctAnswer, setCorrectAnswer] = useState('')
+    const [questionReports, setQuestionReports] = useState([])
 
     const { questionID, questionTypeID, unitID, questionTypeName, subjectID } = useParams()
     const navigate = useNavigate()
 
     useEffect(() => {
         getQuestion()
-    }, [])
+        if (questionID) {
+            getQuestionReports(questionID, setQuestionReports)
+        }
+    }, [questionID])
 
     const getQuestion = async () => {
         await getQuestionDetails(questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr, setExplanation)
@@ -103,7 +109,14 @@ const UpdateQuestion = () => {
             }
             data.append('questionPoints', questionPoint)
             data.append('explanation', explanation)
-            updateQuestion(data, questionID, setserverOperationError, setServerOperationLoading, setQuesionAdded)
+            updateQuestion(data, questionID, setserverOperationError, setServerOperationLoading, (val) => {
+                setQuesionAdded(val)
+                if (val) {
+                    resolveQuestionReports(questionID, 'Resolved by admin during question revision', () => {
+                        setQuestionReports([])
+                    })
+                }
+            })
         }
     }
 
@@ -131,6 +144,42 @@ const UpdateQuestion = () => {
         <div className="update-question">
             <div>
                 <p className='text-color head-title'>Update the question</p>
+                {questionReports.length > 0 && (
+                    <div style={{
+                        background: '#fff1f2',
+                        border: '1.5px solid #fecdd3',
+                        borderLeft: '5px solid #e11d48',
+                        borderRadius: '8px',
+                        padding: '14px 18px',
+                        margin: '16px 0 20px 0'
+                    }}>
+                        <div className="d-flex justify-content-space-between align-items-center" style={{ marginBottom: '8px' }}>
+                            <strong style={{ color: '#be123c', fontSize: '14px' }}>
+                                <i className="fa fa-flag" aria-hidden="true" style={{ marginRight: '8px' }}></i>
+                                Student Problem Reports ({questionReports.length})
+                            </strong>
+                            <button
+                                type="button"
+                                className="button"
+                                style={{ padding: '4px 12px', fontSize: '12px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                                onClick={() => {
+                                    resolveQuestionReports(questionID, 'Resolved by admin during question revision', () => {
+                                        setQuestionReports([]);
+                                    });
+                                }}
+                            >
+                                ✓ Mark Reports as Resolved
+                            </button>
+                        </div>
+                        <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', color: '#881337', lineHeight: '1.6' }}>
+                            {questionReports.map(r => (
+                                <li key={r._id}>
+                                    <strong>{r.reason}:</strong> {r.comment ? `"${r.comment}"` : <em>(no comment)</em>} &bull; <small>by {r.reporterName || 'Student'} ({new Date(r.createdAt).toLocaleDateString()})</small>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
                 {(serverOperationError) ? <p className='text-error'>{serverOperationError}</p> : ''}
                 {(previewQuestionPic) ? <img className='preview-img' src={previewQuestionPic} alt="" /> : (questionDetails.questionPic) ? <div className='question-pic'>
                     <img src={questionDetails.questionPic} alt="" />
@@ -240,7 +289,11 @@ const UpdateQuestion = () => {
                 </div> : ""}
                 <div className="d-flex">
                     <button className='button' onClick={handleUpadteQuestion}>{(serverOperationLoading) ? <span className="button-loader"></span> : 'Update'}</button>
-                    <Link to={`/chapter/${questionTypeName}/${questionDetails.chapter}/${questionTypeID}/${unitID}/${subjectID}`}><button className='button cancel-button'>Cancel</button></Link>
+                    {questionTypeName ? (
+                        <Link to={`/chapter/${questionTypeName}/${questionDetails.chapter}/${questionTypeID}/${unitID}/${subjectID}`}><button className='button cancel-button'>Cancel</button></Link>
+                    ) : (
+                        <button className='button cancel-button' type="button" onClick={() => navigate(-1)}>Cancel</button>
+                    )}
                 </div>
                 {(quesionAdded) ? <div className='correct d-flex align-items-center'>
                     <img src={correctIcon} alt="" />

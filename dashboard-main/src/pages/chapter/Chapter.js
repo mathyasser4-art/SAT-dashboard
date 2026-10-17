@@ -9,6 +9,7 @@ import getSystem from '../../api/getSystem.api'
 import getUnit from '../../api/getUnit.api'
 import addQuestion from '../../api/addQuestion.api'
 import updateQuestion from '../../api/updateQuestion.api'
+import getReportedQuestions from '../../api/getReportedQuestions.api'
 import '../../reusable.css'
 import './Chapter.css'
 
@@ -35,11 +36,16 @@ const Chapter = () => {
     const [destinationUnitID, setDestinationUnitID] = useState('')
     const [destinationChapterID, setDestinationChapterID] = useState('')
     const [availableUnits, setAvailableUnits] = useState([])
+    const [reportedQuestionIds, setReportedQuestionIds] = useState(new Set())
     const { chapterID, questionTypeID, unitID, questionTypeName, subjectID } = useParams()
     const navigate = useNavigate()
 
     useEffect(() => {
         getchapterDetails()
+        getReportedQuestions('pending', (reportsList) => {
+            const ids = new Set((reportsList || []).map(r => r.question?._id || r.question).filter(Boolean));
+            setReportedQuestionIds(ids);
+        });
     }, [chapterID]);
 
     useEffect(() => {
@@ -311,8 +317,33 @@ const Chapter = () => {
             </div>
             {chapterDetails.questions?.map((item, index) => {
                 return (
-                    <div key={item._id} className='question d-flex justify-content-space-between'>
-                        <div className='question-text' dangerouslySetInnerHTML={{ __html: item.question }} />
+                    <div key={item._id} className='question d-flex justify-content-space-between align-items-center'>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, overflow: 'hidden' }}>
+                            {reportedQuestionIds.has(item._id) && (
+                                <Link 
+                                    to="/reportedQuestions" 
+                                    style={{ 
+                                        display: 'inline-flex', 
+                                        alignItems: 'center', 
+                                        gap: '5px', 
+                                        padding: '3px 8px', 
+                                        background: '#fee2e2', 
+                                        color: '#dc2626', 
+                                        border: '1px solid #fecaca', 
+                                        borderRadius: '4px', 
+                                        fontSize: '11px', 
+                                        fontWeight: 800, 
+                                        textDecoration: 'none',
+                                        flexShrink: 0
+                                    }}
+                                    title="Students reported a problem with this question. Click to view reports in queue."
+                                >
+                                    <i className="fa fa-flag" aria-hidden="true"></i>
+                                    <span>Needs Revision</span>
+                                </Link>
+                            )}
+                            <div className='question-text' dangerouslySetInnerHTML={{ __html: item.question }} />
+                        </div>
                         <div className='question-actions'>
                             <Link to={`/updateQuestion/${questionTypeName}/${item._id}/${questionTypeID}/${unitID}/${subjectID}`}><i className="fa fa-pencil icon" aria-hidden="true"></i></Link>
                             <i onClick={() => openDeleteQuestionPopup(item._id)} className="fa fa-trash-o" aria-hidden="true"></i>

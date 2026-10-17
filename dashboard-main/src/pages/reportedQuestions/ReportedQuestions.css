@@ -1,0 +1,516 @@
+/* Reported Questions Queue Page Styling */
+
+.reports-page-container {
+    max-width: 1200px;
+    margin: 30px auto 80px;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* Header */
+.reports-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.reports-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.reports-icon-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.reports-header-text h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.reports-page-subtitle {
+    margin: 4px 0 0;
+    color: #64748b;
+    font-size: 13.5px;
+}
+
+.reports-refresh-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.reports-refresh-btn:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+/* Controls Bar (Tabs + Search) */
+.reports-controls-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.reports-tabs-wrap {
+    display: inline-flex;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 10px;
+    gap: 4px;
+}
+
+.reports-tab-btn {
+    background: transparent;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+}
+
+.reports-tab-btn.active {
+    background: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.reports-pill-count {
+    padding: 2px 7px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.reports-pill-count.pending {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.reports-pill-count.resolved {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.reports-pill-count.all {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+/* Search Box */
+.reports-search-box {
+    position: relative;
+    flex: 1;
+    max-width: 380px;
+    min-width: 240px;
+}
+
+.reports-search-box i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.reports-search-box input {
+    width: 100%;
+    padding: 9px 34px 9px 34px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13px;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s;
+    background: #ffffff;
+}
+
+.reports-search-box input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.reports-clear-search {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* Loading & Empty States */
+.reports-loading-box,
+.reports-empty-box,
+.reports-error-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 60px 24px;
+    text-align: center;
+}
+
+.reports-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #ef4444;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    animation: reportSpin 0.7s linear infinite;
+}
+
+@keyframes reportSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.reports-empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.reports-empty-box h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: #0f172a;
+}
+
+.reports-empty-box p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13.5px;
+}
+
+/* Report Cards List */
+.reports-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.report-card {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px 22px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.report-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+}
+
+.report-card.pending {
+    border-left: 5px solid #ef4444;
+}
+
+.report-card.resolved {
+    border-left: 5px solid #10b981;
+    opacity: 0.92;
+}
+
+/* Card Top */
+.report-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.report-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    color: #64748b;
+    flex-wrap: wrap;
+}
+
+.report-breadcrumb i {
+    color: #94a3b8;
+}
+
+.report-breadcrumb .sep {
+    color: #cbd5e1;
+    font-weight: 700;
+}
+
+.report-breadcrumb .chap-highlight {
+    color: #0f172a;
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.report-status-badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.report-reason-pill {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.report-state-badge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+.report-state-badge.pending {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.report-state-badge.resolved {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+/* Student Comment Box */
+.report-comment-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #92400e;
+    line-height: 1.45;
+}
+
+.report-comment-banner i {
+    color: #d97706;
+    margin-top: 2px;
+    font-size: 14px;
+}
+
+.report-no-comment-note {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+/* Question Preview */
+.report-question-preview {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px 18px;
+}
+
+.report-question-preview-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.q-badge {
+    font-size: 11.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #475569;
+}
+
+.q-type-badge,
+.q-points-badge {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #334155;
+}
+
+.report-question-pic {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.report-question-pic img {
+    max-width: 100%;
+    max-height: 220px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+}
+
+.report-question-html {
+    font-size: 13.5px;
+    color: #0f172a;
+    line-height: 1.6;
+}
+
+.report-mcq-meta {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed #cbd5e1;
+    font-size: 12.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.meta-label {
+    font-weight: 700;
+    color: #475569;
+}
+
+.meta-correct {
+    color: #16a34a;
+    font-weight: 700;
+}
+
+.report-deleted-q-notice {
+    color: #dc2626;
+    font-size: 12.5px;
+    margin: 0;
+}
+
+/* Card Footer */
+.report-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 6px;
+    flex-wrap: wrap;
+}
+
+.report-meta-info {
+    font-size: 12px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.report-meta-info .dot {
+    color: #cbd5e1;
+}
+
+.report-actions-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.report-action-btn {
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.report-action-btn.edit-btn {
+    background: #0284c7;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+}
+
+.report-action-btn.edit-btn:hover {
+    background: #0369a1;
+    transform: translateY(-1px);
+}
+
+.report-action-btn.resolve-btn {
+    background: #16a34a;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+}
+
+.report-action-btn.resolve-btn:hover:not(:disabled) {
+    background: #15803d;
+    transform: translateY(-1px);
+}
+
+.report-action-btn.unresolve-btn {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+.report-action-btn.unresolve-btn:hover:not(:disabled) {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.report-action-btn.delete-btn {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    padding: 7px 10px;
+}
+
+.report-action-btn.delete-btn:hover:not(:disabled) {
+    background: #fee2e2;
+    border-color: #fca5a5;
+}

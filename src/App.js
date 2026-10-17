@@ -18,6 +18,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path='/' element={<Navigate to='/questionType' />} />
+        <Route path='/login' element={<Navigate to='/questionType' />} />
         <Route path='/questionType' element={<QuestionType />} />
         <Route path='/subject/:questionTypeName/:questionTypeID' element={<Subject />} />
         <Route path='/unit/:questionTypeName/:questionTypeID/:subjectID' element={<Unit />} />

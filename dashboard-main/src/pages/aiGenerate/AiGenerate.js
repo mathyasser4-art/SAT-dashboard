@@ -5,7 +5,7 @@ import correctIcon from '../../correct-icon.png'
 import '../../reusable.css'
 import './AiGenerate.css'
 
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent'
 const ACCEPTED_FILE_TYPES = '.pdf,.doc,.docx,.png,.jpg,.jpeg,.webp'
 
 const fileToBase64 = (file) => new Promise((resolve, reject) => {

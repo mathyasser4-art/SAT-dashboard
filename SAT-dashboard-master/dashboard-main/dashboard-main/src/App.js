@@ -9,7 +9,6 @@ import UpdateQuestion from './pages/updateQuestion/UpdateQuestion'
 import Subject from './pages/subject/Subject'
 import School from './pages/school/School'
 import Users from './pages/users/Users'
-import AiGenerate from './pages/aiGenerate/AiGenerate'
 import ReportedQuestions from './pages/reportedQuestions/ReportedQuestions'
 
 function App() {
@@ -29,7 +28,6 @@ function App() {
         <Route path='/reportedQuestions' element={<ReportedQuestions />} />
         <Route path='/school' element={<School />} />
         <Route path='/users' element={<Users />} />
-        <Route path='/aiGenerate/:questionTypeName/:chapterName/:chapterID/:questionTypeID/:unitID/:subjectID' element={<AiGenerate />} />
       </Routes>
     </>
   );

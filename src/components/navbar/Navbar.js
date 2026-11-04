@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../../logo.png'
-import mrshahinLogo from '../../mrshahin_logo.svg'
+import logo from '../../satarea_logo.svg'
 import getReportSummary from '../../api/getReportSummary.api';
 import '../../reusable.css'
 import './Navbar.css'
 
 const Navbar = () => {
-    const isAuth = Boolean(localStorage.getItem('O_authWEB') || localStorage.getItem('userToken'));
-    const role = localStorage.getItem('auth_role');
-    const schoolName = (localStorage.getItem('school_name') || '').toLowerCase();
     const [pendingReportsCount, setPendingReportsCount] = useState(0);
 
     useEffect(() => {
@@ -20,24 +16,14 @@ const Navbar = () => {
         return () => clearInterval(interval);
     }, []);
     
-    // SAT School Account logo selection
-    const isSatSchoolAccount = isAuth && (
-        schoolName.includes('sat') ||
-        schoolName.includes('bluepaper') ||
-        schoolName.includes('shahin') ||
-        schoolName === 'sat school' ||
-        ['Teacher', 'School', 'Student', 'Supervisor', 'IT'].includes(role) ||
-        Boolean(role)
-    );
-    const activeLogo = isSatSchoolAccount ? mrshahinLogo : logo;
 
     return (
         <nav>
             <div className='nav-container d-flex justify-content-space-between align-items-center'>
                 <Link to={'/questionType'}>
                     <img 
-                        src={activeLogo} 
-                        alt="Logo" 
+                        src={logo} 
+                        alt="SATAREA Admin" 
                         style={{ maxHeight: '36px', width: 'auto', objectFit: 'contain' }} 
                     />
                 </Link>

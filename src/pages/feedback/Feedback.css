@@ -1,0 +1,119 @@
+.fbk-container {
+    padding: 7rem 5.5rem 4rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    color: #121B2B;
+}
+
+.fbk-heading { margin: 0 0 6px; font-size: 26px; }
+.fbk-heading i { color: #f43f5e; margin-right: 8px; }
+.fbk-intro { margin: 0 0 20px; color: #566379; max-width: 720px; }
+
+.fbk-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.fbk-stats > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 14px 18px;
+    border: 1px solid #dde3ec;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.fbk-stats strong { font-size: 26px; }
+.fbk-stats span { color: #566379; font-size: 13px; }
+.fbk-stats-loved em { font-style: normal; font-weight: 600; font-size: 14px; }
+
+.fbk-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #dde3ec;
+}
+
+.fbk-tabs button {
+    padding: 10px 14px;
+    border: none;
+    border-bottom: 3px solid transparent;
+    background: transparent;
+    color: #435065;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.fbk-tabs button.active { color: #1F5FD8; border-bottom-color: #1F5FD8; }
+
+.fbk-count {
+    margin-left: 6px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 12px;
+}
+
+.fbk-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+
+.fbk-item {
+    padding: 16px 18px;
+    border: 1px solid #dde3ec;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(18, 27, 43, 0.05);
+}
+
+.fbk-done { opacity: 0.75; }
+
+.fbk-item-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.fbk-stars { color: #f59e0b; letter-spacing: 1px; }
+.fbk-meta { color: #566379; font-size: 13px; }
+.fbk-badge { padding: 2px 8px; border-radius: 999px; background: #fee2e2; color: #be123c; font-size: 12px; font-weight: 700; }
+
+.fbk-status { padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.fbk-status-new { background: #dbeafe; color: #1d4ed8; }
+.fbk-status-planned { background: #fef3c7; color: #b45309; }
+.fbk-status-done { background: #dcfce7; color: #15803d; }
+
+.fbk-quote { margin: 10px 0 6px; font-size: 16px; line-height: 1.5; white-space: pre-line; unicode-bidi: plaintext; }
+.fbk-public { font-size: 13px; color: #435065; }
+.fbk-private { color: #b45309; }
+
+.fbk-loves { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.fbk-loves span { padding: 2px 9px; border-radius: 999px; background: #f1f5f9; color: #334155; font-size: 12px; }
+
+.fbk-reply { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; font-size: 13px; font-weight: 600; color: #435065; }
+.fbk-reply em { font-weight: 400; }
+.fbk-reply input { padding: 8px 10px; border: 1px solid #c5cfdc; border-radius: 8px; font: inherit; font-weight: 400; }
+
+.fbk-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+.fbk-actions button {
+    padding: 7px 12px;
+    border: 1px solid #c5cfdc;
+    border-radius: 8px;
+    background: #fff;
+    color: #1e293b;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.fbk-actions button i { margin-right: 4px; }
+.fbk-actions .fbk-approve { background: #16a34a; border-color: #16a34a; color: #fff; }
+.fbk-actions .fbk-danger { color: #b91c1c; }
+
+.fbk-error { color: #b91c1c; font-weight: 600; }
+.fbk-ok { color: #15803d; font-weight: 600; }
+
+@media (max-width: 768px) {
+    .fbk-container { padding: 6rem 1rem 3rem; }
+}

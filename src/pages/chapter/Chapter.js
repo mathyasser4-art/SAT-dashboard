@@ -154,7 +154,8 @@ const Chapter = () => {
     const cloneQuestionData = (questionDetails) => {
         const data = new FormData()
         data.append('question', questionDetails.question)
-        data.append('questionPoints', questionDetails.questionPoints)
+        // Every question is worth 1 mark, as on the SAT
+        data.append('questionPoints', 1)
         data.append('chapter', destinationChapterID)
         data.append('index', 'last')
 
@@ -187,7 +188,8 @@ const Chapter = () => {
     const buildQuestionUpdateData = (questionDetails) => {
         const data = new FormData()
         data.append('question', questionDetails.question)
-        data.append('questionPoints', questionDetails.questionPoints)
+        // Every question is worth 1 mark, as on the SAT
+        data.append('questionPoints', 1)
         data.append('chapter', destinationChapterID)
 
         if (questionDetails.typeOfAnswer === 'Essay') {

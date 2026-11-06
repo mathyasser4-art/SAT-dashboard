@@ -20,7 +20,6 @@ const UpdateQuestion = () => {
     const [serverLoadingPic, setServerLoadingPic] = useState(false)
     const [question, setQuestion] = useState('')
     const [answer, setAnswer] = useState('')
-    const [questionPoint, setQuestionPoint] = useState('')
     const [explanation, setExplanation] = useState('')
     const [allAnswer, setAllAnswer] = useState([])
     const [questionPic, setQuestionPic] = useState()
@@ -48,7 +47,8 @@ const UpdateQuestion = () => {
     }, [questionID])
 
     const getQuestion = async () => {
-        await getQuestionDetails(questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr, setExplanation)
+        // The question's points are not shown: every question is worth 1 mark
+        await getQuestionDetails(questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, () => {}, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr, setExplanation)
     }
 
     // Strips HTML tags to check if editor content is effectively empty
@@ -77,7 +77,7 @@ const UpdateQuestion = () => {
     }
 
     const handleUpadteQuestion = () => {
-        if (isQuestionEmpty(question) || questionPoint === ''
+        if (isQuestionEmpty(question)
             || (allAnswer.length === 0 && questionType === 'Essay')
             || (isQuestionEmpty(mcqAnswerFr) && questionType === 'MCQ')
             || (isQuestionEmpty(mcqAnswerFs) && questionType === 'MCQ')
@@ -107,7 +107,8 @@ const UpdateQuestion = () => {
                 data.append('wrongAnswer', mcqAnswerTh)
                 data.append('wrongAnswer', mcqAnswerFr)
             }
-            data.append('questionPoints', questionPoint)
+            // Every question is worth 1 mark, as on the SAT (the server saves 1 whatever is sent)
+            data.append('questionPoints', 1)
             data.append('explanation', explanation)
             updateQuestion(data, questionID, setserverOperationError, setServerOperationLoading, (val) => {
                 setQuesionAdded(val)
@@ -280,7 +281,7 @@ const UpdateQuestion = () => {
                         placeholder="Type question explanation and model solution here. Click Σ to insert a math formula visually."
                     />
                 </div>
-                <input type="text" placeholder='Enter the question points' value={questionPoint} onChange={e => setQuestionPoint(e.target.value)} />
+                <p style={{ color: '#64748b', fontSize: '14px', margin: '4px 0 12px' }}>Every question is worth 1 mark, as on the SAT.</p>
                 {(questionType == 'Graph') ? <div className="d-flex">
                     <img className='graph-preview graph-preview-fs' src={questionDetails.correctPicAnswer} alt="" />
                     <img className='graph-preview' src={questionDetails.wrongPicAnswer[0]} alt="" />

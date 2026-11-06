@@ -12,7 +12,8 @@ const saveAiQuestion = (questionData, chapterID) => {
 
     // Wrap question text in <p> to match Quill HTML format
     data.append('question', questionData.question)
-    data.append('questionPoints', questionData.questionPoints || 2)
+    // Every question is worth 1 mark, as on the SAT
+    data.append('questionPoints', 1)
     data.append('chapter', chapterID)
     data.append('index', 'last')
 

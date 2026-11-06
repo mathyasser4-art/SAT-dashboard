@@ -14,7 +14,6 @@ const AddQuestion = () => {
     const [serverLoadingPic, setServerLoadingPic] = useState(false)
     const [question, setQuestion] = useState('')
     const [answer, setAnswer] = useState('')
-    const [questionPoint, setQuestionPoint] = useState('')
     const [explanation, setExplanation] = useState('')
     const [allAnswer, setAllAnswer] = useState([])
     const [questionPic, setQuestionPic] = useState()
@@ -96,7 +95,7 @@ const AddQuestion = () => {
     }
 
     const addNewQuestion = () => {
-        if (isQuestionEmpty(question) || questionPoint === ''
+        if (isQuestionEmpty(question)
             || (allAnswer.length === 0 && questionType === 'Essay Question')
             || (isQuestionEmpty(mcqAnswerFr) && questionType === 'MCQ Question')
             || (isQuestionEmpty(mcqAnswerFs) && questionType === 'MCQ Question')
@@ -133,7 +132,8 @@ const AddQuestion = () => {
             } else if (questionType === 'Graph Question') {
                 data.append('typeOfAnswer', 'Graph')
             }
-            data.append('questionPoints', questionPoint)
+            // Every question is worth 1 mark, as on the SAT (the server saves 1 whatever is sent)
+            data.append('questionPoints', 1)
             data.append('explanation', explanation)
             data.append('chapter', chapterID)
             data.append('index', questionNum)
@@ -169,7 +169,6 @@ const AddQuestion = () => {
         setExplanation('')
         setQuesionFullAdded(false)
         setAnswer('')
-        setQuestionPoint('')
         setAllAnswer([])
         setQuestionPic()
         setAnswerPic()
@@ -319,7 +318,7 @@ const AddQuestion = () => {
                     />
                 </div>
 
-                <input type="text" placeholder='Enter the question points' value={questionPoint} onChange={e => setQuestionPoint(e.target.value)} />
+                <p style={{ color: '#64748b', fontSize: '14px', margin: '4px 0 12px' }}>Every question is worth 1 mark, as on the SAT.</p>
                 <div className="d-flex">
                     <button className='button' onClick={addNewQuestion}>{(serverOperationLoading) ? <span className="button-loader"></span> : 'Add'}</button>
                     <Link to={`/chapter/${questionTypeName}/${chapterID}/${questionTypeID}/${unitID}/${subjectID}`}><button className='button cancel-button'>Cancel</button></Link>

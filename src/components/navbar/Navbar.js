@@ -34,6 +34,7 @@ const Navbar = () => {
                             <span className="reports-nav-badge">{pendingReportsCount}</span>
                         )}
                     </Link>
+                    <Link to={'/notices'} title="Send a notice to the website's users"><i className="fa fa-bullhorn" aria-hidden="true"></i></Link>
                     <Link to={'/users'}><i className="fa fa-user" aria-hidden="true"></i></Link>
                     <Link to={'/school'}><i className="fa fa-graduation-cap" aria-hidden="true"></i></Link>
                 </div>

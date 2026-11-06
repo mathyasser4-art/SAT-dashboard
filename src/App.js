@@ -9,6 +9,7 @@ import UpdateQuestion from './pages/updateQuestion/UpdateQuestion'
 import Subject from './pages/subject/Subject'
 import School from './pages/school/School'
 import Users from './pages/users/Users'
+import Notices from './pages/notices/Notices'
 import ReportedQuestions from './pages/reportedQuestions/ReportedQuestions'
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path='/reportedQuestions' element={<ReportedQuestions />} />
         <Route path='/school' element={<School />} />
         <Route path='/users' element={<Users />} />
+        <Route path='/notices' element={<Notices />} />
       </Routes>
     </>
   );

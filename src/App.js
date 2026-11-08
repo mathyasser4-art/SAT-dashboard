@@ -11,6 +11,7 @@ import School from './pages/school/School'
 import Users from './pages/users/Users'
 import Notices from './pages/notices/Notices'
 import Feedback from './pages/feedback/Feedback'
+import Payments from './pages/payments/Payments'
 import ReportedQuestions from './pages/reportedQuestions/ReportedQuestions'
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         <Route path='/users' element={<Users />} />
         <Route path='/notices' element={<Notices />} />
         <Route path='/feedback' element={<Feedback />} />
+        <Route path='/payments' element={<Payments />} />
       </Routes>
     </>
   );

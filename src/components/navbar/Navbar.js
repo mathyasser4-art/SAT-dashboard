@@ -2,16 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../satarea_logo.svg'
 import getReportSummary from '../../api/getReportSummary.api';
+import { getPendingCount } from '../../api/payments.api';
 import '../../reusable.css'
 import './Navbar.css'
 
 const Navbar = () => {
     const [pendingReportsCount, setPendingReportsCount] = useState(0);
+    const [pendingPayments, setPendingPayments] = useState(0);
 
     useEffect(() => {
+        const refreshPayments = () => getPendingCount().then(setPendingPayments).catch(() => {});
         getReportSummary(setPendingReportsCount);
+        refreshPayments();
         const interval = setInterval(() => {
             getReportSummary(setPendingReportsCount);
+            refreshPayments();
         }, 30000);
         return () => clearInterval(interval);
     }, []);
@@ -32,6 +37,12 @@ const Navbar = () => {
                         <i className="fa fa-flag" aria-hidden="true" style={{ color: '#ef4444' }}></i>
                         {pendingReportsCount > 0 && (
                             <span className="reports-nav-badge">{pendingReportsCount}</span>
+                        )}
+                    </Link>
+                    <Link to={'/payments'} className="reports-nav-item" title="Payments: InstaPay / Vodafone Cash screenshots to approve">
+                        <i className="fa fa-money" aria-hidden="true" style={{ color: '#16a34a' }}></i>
+                        {pendingPayments > 0 && (
+                            <span className="reports-nav-badge">{pendingPayments}</span>
                         )}
                     </Link>
                     <Link to={'/feedback'} title="Feedback and the homepage's Wall of Love"><i className="fa fa-heart" aria-hidden="true" style={{ color: '#f43f5e' }}></i></Link>

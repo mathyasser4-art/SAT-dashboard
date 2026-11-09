@@ -24,3 +24,11 @@ export const getPendingCount = () => request('GET', `${URL}/count`).then(d => d.
 export const getPayments = (status) => request('GET', `${URL}?status=${encodeURIComponent(status)}`)
 export const approvePayment = (id, note) => request('PUT', `${URL}/${id}`, { action: 'approve', note })
 export const rejectPayment = (id, note) => request('PUT', `${URL}/${id}`, { action: 'reject', note })
+
+// Partners' discount codes (backend: src/services/discountCodes.js): each advertising partner gets
+// a code and a link; the report shows the students and payments each code brought
+const CODES = `${URL}/codes`
+export const getCodes = () => request('GET', CODES)
+export const createCode = (fields) => request('POST', CODES, fields)
+export const updateCode = (id, fields) => request('PUT', `${CODES}/${id}`, fields)
+export const deleteCode = (id) => request('DELETE', `${CODES}/${id}`)

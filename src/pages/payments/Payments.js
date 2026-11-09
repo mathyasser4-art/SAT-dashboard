@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { getPayments, approvePayment, rejectPayment } from '../../api/payments.api';
 import '../../reusable.css'
 import './Payments.css'
@@ -41,6 +42,7 @@ const PaymentRow = ({ p, onApprove, onReject, busy }) => {
                     <strong className="pay-amount">{Number(p.amount).toLocaleString('en-US')} {p.currency || 'EGP'}</strong>
                     <span className="pay-chip">{PLAN_NAMES[p.plan] || p.plan}</span>
                     <span className="pay-chip pay-chip-method">{METHODS[p.method] || p.method}</span>
+                    {p.code && <span className="pay-chip pay-chip-code" title={`${p.discountPercent}% off with a partner's code`}>{p.code} −{p.discountPercent}%</span>}
                     <span className="pay-date">{when(p.createdAt)}</span>
                 </div>
                 <dl className="pay-details">
@@ -48,6 +50,8 @@ const PaymentRow = ({ p, onApprove, onReject, busy }) => {
                     {u.email && <><dt>Email</dt><dd>{u.email}</dd></>}
                     {u.phone && <><dt>Phone</dt><dd dir="ltr">{u.phone}</dd></>}
                     <dt>Sent from</dt><dd dir="ltr"><strong>{p.senderNumber || '–'}</strong></dd>
+                    {p.code && <><dt>Discount code</dt><dd><strong>{p.code}</strong>{p.codeCompany ? ` from ${p.codeCompany}` : ''}: {p.discountPercent}% off {Number(p.originalAmount || p.amount).toLocaleString('en-US')} EGP, so the amount to receive is <strong>{Number(p.amount).toLocaleString('en-US')} EGP</strong></dd></>}
+                    {!p.code && u.referralCode && <><dt>Came with code</dt><dd>{u.referralCode} (not used on this payment)</dd></>}
                     {p.note && <><dt>Note</dt><dd dir="auto">{p.note}</dd></>}
                     {activeUntil && <><dt>Now active until</dt><dd>{activeUntil}</dd></>}
                     {p.status === 'approved' && p.activatedUntil && <><dt>Activated until</dt><dd>{day(p.activatedUntil)} (approved {when(p.reviewedAt)})</dd></>}
@@ -121,6 +125,8 @@ const Payments = () => {
                 Users send 200 EGP (monthly) or 1000 EGP (yearly) by InstaPay or Vodafone Cash
                 {payTo ? <> to <strong dir="ltr">{payTo.number}</strong> ({payTo.name})</> : null}, then upload a screenshot of the transfer.
                 Check that the money arrived, then approve to activate their account.
+                A payment made with a partner's discount code shows the code and the lower amount to receive.
+                Make the codes and see what each partner brought on the <Link to="/codes">Discount codes</Link> page.
             </p>
 
             <div className="pay-tabs" role="tablist">

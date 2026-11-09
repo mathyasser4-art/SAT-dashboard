@@ -72,6 +72,7 @@
 .pay-amount { font-size: 20px; }
 .pay-chip { padding: 2px 9px; border-radius: 999px; background: #dbeafe; color: #1d4ed8; font-size: 12px; font-weight: 700; }
 .pay-chip-method { background: #f1f5f9; color: #334155; }
+.pay-chip-code { background: #dcfce7; color: #15803d; }
 .pay-date { color: #566379; font-size: 13px; }
 
 .pay-details {

@@ -45,6 +45,7 @@ const Navbar = () => {
                             <span className="reports-nav-badge">{pendingPayments}</span>
                         )}
                     </Link>
+                    <Link to={'/codes'} title="Discount codes: partners' codes and the students each one brought"><i className="fa fa-tag" aria-hidden="true" style={{ color: '#16a34a' }}></i></Link>
                     <Link to={'/feedback'} title="Feedback and the homepage's Wall of Love"><i className="fa fa-heart" aria-hidden="true" style={{ color: '#f43f5e' }}></i></Link>
                     <Link to={'/notices'} title="Send a notice to the website's users"><i className="fa fa-bullhorn" aria-hidden="true"></i></Link>
                     <Link to={'/users'}><i className="fa fa-user" aria-hidden="true"></i></Link>

@@ -12,6 +12,7 @@ import Users from './pages/users/Users'
 import Notices from './pages/notices/Notices'
 import Feedback from './pages/feedback/Feedback'
 import Payments from './pages/payments/Payments'
+import DiscountCodes from './pages/discountCodes/DiscountCodes'
 import ReportedQuestions from './pages/reportedQuestions/ReportedQuestions'
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route path='/notices' element={<Notices />} />
         <Route path='/feedback' element={<Feedback />} />
         <Route path='/payments' element={<Payments />} />
+        <Route path='/codes' element={<DiscountCodes />} />
       </Routes>
     </>
   );

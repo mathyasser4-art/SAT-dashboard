@@ -123,7 +123,7 @@ const Payments = () => {
             <h1 className="pay-heading"><i className="fa fa-money" aria-hidden="true"></i> Payments</h1>
             <p className="pay-intro">
                 Users send 200 EGP (monthly) or 1000 EGP (yearly) by InstaPay or Vodafone Cash
-                {payTo ? <> to <strong dir="ltr">{payTo.number}</strong> ({payTo.name})</> : null}, then upload a screenshot of the transfer.
+                {payTo ? <> to <strong dir="ltr">{payTo.number}</strong></> : null}, then upload a screenshot of the transfer.
                 Check that the money arrived, then approve to activate their account.
                 A payment made with a partner's discount code shows the code and the lower amount to receive.
                 Make the codes and see what each partner brought on the <Link to="/codes">Discount codes</Link> page.

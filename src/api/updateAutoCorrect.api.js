@@ -1,4 +1,5 @@
-const URL = '/api/question/updateAutoCorrect/'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/question/updateAutoCorrect/`
 
 const updateAutoCorrect = (questionID, setserverOperationError, setAutoCorrectLoading, setQuestionDetails) => {
 

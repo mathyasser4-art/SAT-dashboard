@@ -1,4 +1,5 @@
-const URL = '/api/system/updateSystem'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/system/updateSystem`
 
 const updateSystem = (data, systemID, setserverOperationError, setServerOperationLoading, setAllSystem) => {
 

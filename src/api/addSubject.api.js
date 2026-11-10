@@ -1,4 +1,5 @@
-const URL = '/api/subject/addSubject'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/subject/addSubject`
 
 const addSubject = (data, setserverOperationError, setServerOperationLoading, setAllSystem) => {
 

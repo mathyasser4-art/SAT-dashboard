@@ -1,4 +1,5 @@
-const URL = '/api/question/updateQuestion/'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/question/updateQuestion/`
 
 const updateQuestion = (data, questionID, setserverOperationError, setServerOperationLoading, setQuesionAdded) => {
 

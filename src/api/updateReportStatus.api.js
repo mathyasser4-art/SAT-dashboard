@@ -1,4 +1,5 @@
-const URL = 'https://sat-backend-production.up.railway.app/report/updateStatus/';
+import { DIRECT_API_BASE } from '../config/api.config';
+const URL = `${DIRECT_API_BASE}/report/updateStatus/`;
 
 const updateReportStatus = (reportID, status, resolutionNote, onSuccess, onError, setLoading) => {
     if (setLoading) setLoading(true);

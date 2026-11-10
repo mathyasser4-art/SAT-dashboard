@@ -1,4 +1,5 @@
-const URL = '/api/user/get'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/user/get`
 
 const getUsers = (pageNumber, setLoading, setAllClients, setPageNumber, setTotalPage) => {
 

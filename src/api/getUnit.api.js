@@ -1,4 +1,5 @@
-const URL = '/api/unit/getUnit'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/unit/getUnit`
 
 const getUnit = (questionTypeID, subjectID, setAllUnit, setLoading) => {
     setLoading(true)

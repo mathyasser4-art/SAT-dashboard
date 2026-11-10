@@ -1,4 +1,5 @@
-const URL = '/api/question/updateAnswerPic'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/question/updateAnswerPic`
 
 const addAnswerPic = (data, questionID, setserverOperationError, setServerOperationLoading, setPicSaved) => {
     setServerOperationLoading(true)

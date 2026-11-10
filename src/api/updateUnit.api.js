@@ -1,4 +1,5 @@
-const URL = '/api/unit/updateUnit'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/unit/updateUnit`
 
 const updateUnit = (data, questionTypeID, unitID, subjectID, setserverOperationError, setServerOperationLoading, setAllUnit) => {
 

@@ -1,4 +1,5 @@
-const URL = '/api/system/getAllSystem'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/system/getAllSystem`
 
 const getSystem = (setAllSystem, setLoading) => {
     setLoading(true)

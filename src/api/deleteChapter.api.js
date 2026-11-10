@@ -1,4 +1,5 @@
-const URL = '/api/chapter/deleteChapter';
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/chapter/deleteChapter`;
 
 const deleteChapter = (chapterID, setserverOperationError, setServerOperationLoading, navigate, questionTypeID, unitID, questionTypeName, subjectID) => {
 

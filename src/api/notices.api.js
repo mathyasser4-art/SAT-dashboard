@@ -1,6 +1,7 @@
+import { API_BASE } from '../config/api.config';
 // Notices from the platform to everyone (or only students, teachers, parents or schools).
 // They arrive in each person's notification bell on the website.
-const URL = '/api/notification/admin/notices'
+const URL = `${API_BASE}/notification/admin/notices`
 
 const request = async (method, url, body) => {
     const response = await fetch(url, {

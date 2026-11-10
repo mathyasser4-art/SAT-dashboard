@@ -1,4 +1,5 @@
-const URL = '/api/question/addGraphQuestion';
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/question/addGraphQuestion`;
 
 const addGraphQuestion = (data, questionID, setserverOperationError, setServerOperationLoading, setQuestionAdded) => {
     setServerOperationLoading(true);

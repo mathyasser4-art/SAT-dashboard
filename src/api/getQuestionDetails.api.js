@@ -1,4 +1,5 @@
-const URL = 'https://sat-backend-production.up.railway.app/question/getQuestionDetails/'
+import { DIRECT_API_BASE } from '../config/api.config';
+const URL = `${DIRECT_API_BASE}/question/getQuestionDetails/`
 
 const getQuestionDetails = (questionID, setQuestionDetails, setLoading, setQuestion, setAllAnswer, setQuestionPoint, setQuestionType, setMcqAnswerFs, setMcqAnswerSe, setMcqAnswerTh, setMcqAnswerFr, setExplanation) => {
     setLoading(true)

@@ -1,4 +1,5 @@
-const URL = '/api/chapter/updateChapter/'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/chapter/updateChapter/`
 
 const updateChapter = (data, chapterID, setserverOperationError, setServerOperationLoading, setChapterDetails) => {
 

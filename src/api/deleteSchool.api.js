@@ -1,4 +1,5 @@
-const URL = '/api/school/deleteSchool';
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/school/deleteSchool`;
 
 const deleteSchool = (schoolID, setserverOperationError, setServerOperationLoading, setAllSchools) => {
 

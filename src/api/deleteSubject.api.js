@@ -1,4 +1,5 @@
-const URL = '/api/subject/deleteSubject';
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/subject/deleteSubject`;
 
 const deleteSubject = (subjectID, setserverOperationError, setServerOperationLoading, setAllSystem) => {
     setServerOperationLoading(true);

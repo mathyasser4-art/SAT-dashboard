@@ -1,4 +1,5 @@
-const URL = '/api/question/addQuestion';
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/question/addQuestion`;
 
 const addQuestion = (data, setserverOperationError, setServerOperationLoading, setQuestionAdded, setQuestionID, questionType, setQuestionGraphAdded) => {
 

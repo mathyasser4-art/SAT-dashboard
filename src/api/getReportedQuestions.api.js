@@ -1,4 +1,5 @@
-const URL = 'https://sat-backend-production.up.railway.app/report/all';
+import { DIRECT_API_BASE } from '../config/api.config';
+const URL = `${DIRECT_API_BASE}/report/all`;
 
 const getReportedQuestions = (status = 'pending', setReports, setLoading, setCounts, setError) => {
     if (setLoading) setLoading(true);

@@ -1,4 +1,5 @@
-const URL = '/api/school/disableSchool'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/school/disableSchool`
 
 const disableSchool = (schoolID, setAllSchools) => {
 

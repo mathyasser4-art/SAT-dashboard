@@ -1,4 +1,5 @@
-const BASE_URL = '/api/question/addQuestion'
+import { API_BASE } from '../config/api.config';
+const BASE_URL = `${API_BASE}/question/addQuestion`
 
 /**
  * Saves a single AI-generated question to the database.

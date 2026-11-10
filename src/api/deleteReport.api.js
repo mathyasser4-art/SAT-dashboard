@@ -1,4 +1,5 @@
-const URL = 'https://sat-backend-production.up.railway.app/report/deleteReport/';
+import { DIRECT_API_BASE } from '../config/api.config';
+const URL = `${DIRECT_API_BASE}/report/deleteReport/`;
 
 const deleteReport = (reportID, onSuccess, onError, setLoading) => {
     if (setLoading) setLoading(true);

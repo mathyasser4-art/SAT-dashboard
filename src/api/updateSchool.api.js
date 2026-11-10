@@ -1,4 +1,5 @@
-const URL = '/api/school/updateSchool'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/school/updateSchool`
 
 const updateSchool = (data, schoolID, setserverOperationError, setServerOperationLoading, setAllSchools) => {
     setServerOperationLoading(true)

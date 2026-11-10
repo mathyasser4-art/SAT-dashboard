@@ -1,4 +1,5 @@
-const URL = 'https://sat-backend-production.up.railway.app/report/summary';
+import { DIRECT_API_BASE } from '../config/api.config';
+const URL = `${DIRECT_API_BASE}/report/summary`;
 
 const getReportSummary = (setPendingCount) => {
     fetch(URL, {

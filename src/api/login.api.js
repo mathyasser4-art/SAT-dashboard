@@ -1,4 +1,5 @@
-const URL = '/api/admin/login'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/admin/login`
 
 const login = (userData, setServerError, setLoading) => {
     setLoading(true)

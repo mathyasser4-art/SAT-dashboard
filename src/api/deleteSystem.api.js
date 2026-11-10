@@ -1,4 +1,5 @@
-const URL = '/api/system/deleteSystem';
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/system/deleteSystem`;
 
 const deleteSystem = (systemID, setserverOperationError, setServerOperationLoading, setAllSystem) => {
     setServerOperationLoading(true);

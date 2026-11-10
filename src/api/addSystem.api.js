@@ -1,4 +1,5 @@
-const URL = '/api/system/addSystem'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/system/addSystem`
 
 const addSystem = (data, setserverOperationError, setServerOperationLoading, setAllSystem) => {
 

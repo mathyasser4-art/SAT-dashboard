@@ -1,4 +1,5 @@
-const URL = '/api/school/getSchool'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/school/getSchool`
 
 const getAllSchool = (setAllSchools, setLoading) => {
 

@@ -1,4 +1,5 @@
-const URL = '/api/chapter/getChapterQuestion/'
+import { API_BASE } from '../config/api.config';
+const URL = `${API_BASE}/chapter/getChapterQuestion/`
 
 const getChapter = (chapterID, setChapterDetails, setLoading) => {
     setLoading(true)

@@ -1,6 +1,7 @@
+import { API_BASE } from '../config/api.config';
 // Payment requests: screenshots of InstaPay / Vodafone Cash transfers to approve or reject.
 // Approving activates the user's account until their plan ends (backend: src/services/payments.js)
-const URL = '/api/payment/admin'
+const URL = `${API_BASE}/payment/admin`
 
 // Sends the admin's login token when there is one (approving activates paid accounts). A token
 // that has expired is retried without it, the way the dashboard's other pages call the backend.

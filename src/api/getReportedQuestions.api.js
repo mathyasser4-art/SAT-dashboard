@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/report/all';
+const URL = '/api/report/all';
 
 const getReportedQuestions = (status = 'pending', setReports, setLoading, setCounts, setError) => {
     if (setLoading) setLoading(true);

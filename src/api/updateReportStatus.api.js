@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/report/updateStatus/';
+const URL = '/api/report/updateStatus/';
 
 const updateReportStatus = (reportID, status, resolutionNote, onSuccess, onError, setLoading) => {
     if (setLoading) setLoading(true);

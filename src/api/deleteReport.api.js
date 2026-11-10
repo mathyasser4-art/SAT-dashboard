@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/report/deleteReport/';
+const URL = '/api/report/deleteReport/';
 
 const deleteReport = (reportID, onSuccess, onError, setLoading) => {
     if (setLoading) setLoading(true);

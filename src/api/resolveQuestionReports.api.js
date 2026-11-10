@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/report/resolveQuestion/';
+const URL = '/api/report/resolveQuestion/';
 
 const resolveQuestionReports = (questionID, resolutionNote, onSuccess, onError) => {
     const token = localStorage.getItem('O_authDB') || localStorage.getItem('O_authWEB') || '';

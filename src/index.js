@@ -1,3 +1,5 @@
+// First, so every request goes to the right backend (see apiBase.js)
+import './apiBase';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import '../node_modules/font-awesome/css/font-awesome.min.css'; 

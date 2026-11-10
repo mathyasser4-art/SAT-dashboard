@@ -1,4 +1,4 @@
-const URL = 'https://sat-backend-production.up.railway.app/report/question/';
+const URL = '/api/report/question/';
 
 const getQuestionReports = (questionID, setReports, setPendingCount) => {
     fetch(`${URL}${questionID}`, {

@@ -25,6 +25,10 @@ export const getPayments = (status) => request('GET', `${URL}?status=${encodeURI
 export const approvePayment = (id, note) => request('PUT', `${URL}/${id}`, { action: 'approve', note })
 export const rejectPayment = (id, note) => request('PUT', `${URL}/${id}`, { action: 'reject', note })
 
+// Money that arrived without a screenshot: find the account by name, email or phone and activate it
+export const findAccounts = (q) => request('GET', `${URL}/accounts?q=${encodeURIComponent(q)}`).then(d => d.accounts || [])
+export const activateAccount = (fields) => request('POST', `${URL}/activate`, fields)
+
 // Partners' discount codes (backend: src/services/discountCodes.js): each advertising partner gets
 // a code and a link; the report shows the students and payments each code brought
 const CODES = `${URL}/codes`

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { getPayments, approvePayment, rejectPayment } from '../../api/payments.api';
+import ActivateByHand from './ActivateByHand';
 import '../../reusable.css'
 import './Payments.css'
 
@@ -20,6 +21,9 @@ const PaymentRow = ({ p, onApprove, onReject, busy }) => {
     const activeUntil = u.isSubscribed && u.subscriptionExpiresAt && new Date(u.subscriptionExpiresAt) > new Date() ? day(u.subscriptionExpiresAt) : '';
     return (
         <li className={`pay-item pay-${p.status}`}>
+            {!p.receiptUrl ? (
+                <div className="pay-receipt pay-no-receipt" title="Activated by hand from the dashboard">No screenshot<br />(activated by hand)</div>
+            ) : (
             <a className="pay-receipt" href={p.receiptUrl} target="_blank" rel="noreferrer" title="Open the screenshot in full size"
                 onClick={(e) => {
                     // Screenshots kept in the database (data: links) cannot be opened as a new tab in most browsers
@@ -37,6 +41,7 @@ const PaymentRow = ({ p, onApprove, onReject, busy }) => {
                 }}>
                 <img src={p.receiptUrl} alt={`Transfer screenshot from ${u.userName || 'user'}`} loading="lazy" />
             </a>
+            )}
             <div className="pay-body">
                 <div className="pay-head">
                     <strong className="pay-amount">{Number(p.amount).toLocaleString('en-US')} {p.currency || 'EGP'}</strong>
@@ -55,6 +60,7 @@ const PaymentRow = ({ p, onApprove, onReject, busy }) => {
                     {p.note && <><dt>Note</dt><dd dir="auto">{p.note}</dd></>}
                     {activeUntil && <><dt>Now active until</dt><dd>{activeUntil}</dd></>}
                     {p.status === 'approved' && p.activatedUntil && <><dt>Activated until</dt><dd>{day(p.activatedUntil)} (approved {when(p.reviewedAt)})</dd></>}
+                    {p.status === 'approved' && !p.receiptUrl && p.adminNote && <><dt>How</dt><dd>{p.adminNote}</dd></>}
                     {p.status === 'rejected' && <><dt>Rejected</dt><dd>{p.adminNote} ({when(p.reviewedAt)})</dd></>}
                 </dl>
                 {p.status !== 'approved' && (
@@ -80,6 +86,7 @@ const PaymentRow = ({ p, onApprove, onReject, busy }) => {
 // Users who paid by InstaPay or Vodafone Cash: check the screenshot against the money received,
 // then approve (activates the account) or reject (the user sees the reason and can try again)
 const Payments = () => {
+    const [searchParams] = useSearchParams();
     const [view, setView] = useState('pending');
     const [items, setItems] = useState([]);
     const [counts, setCounts] = useState({});
@@ -128,6 +135,8 @@ const Payments = () => {
                 A payment made with a partner's discount code shows the code and the lower amount to receive.
                 Make the codes and see what each partner brought on the <Link to="/codes">Discount codes</Link> page.
             </p>
+
+            <ActivateByHand initialQuery={searchParams.get('find') || ''} onActivated={() => load(view)} />
 
             <div className="pay-tabs" role="tablist">
                 {TABS.map(tab => (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import addSubject from '../../api/addSubject.api';
 import addSystem from '../../api/addSystem.api';
 import getSystem from '../../api/getSystem.api';
@@ -20,6 +20,9 @@ function Subject() {
     const [serverOperationError, setserverOperationError] = useState(null)
     const [serverOperationLoading, setServerOperationLoading] = useState(false)
     const { questionTypeID, questionTypeName } = useParams()
+    // SAT or EST (?exam=EST): each exam has its own systems; old systems without an exam are SAT
+    const exam = new URLSearchParams(useLocation().search).get('exam') === 'EST' ? 'EST' : 'SAT'
+    const examSystems = allSystem?.filter(item => (item.exam || 'SAT') === exam)
 
     useEffect(() => {
         getAllSystem()
@@ -45,7 +48,7 @@ function Subject() {
         if (systemName === '') {
             setserverOperationError('Enter the system name first!')
         } else {
-            const data = { systemName }
+            const data = { systemName, exam }
             addSystem(data, setserverOperationError, setServerOperationLoading, setAllSystem)
         }
     }
@@ -153,12 +156,19 @@ function Subject() {
 
     return (
         <div className='subject-container'>
+            <div className='exam-switch'>
+                {['SAT', 'EST'].map(key => (
+                    <Link key={key} to={`/subject/${questionTypeName}/${questionTypeID}?exam=${key}`} className={`exam-switch-btn ${exam === key ? 'active' : ''}`}>{key}</Link>
+                ))}
+                <span className='exam-switch-note'>{exam} · {questionTypeName}</span>
+            </div>
             <div className='new-subject d-flex align-items-center'>
                 <span>+</span>
-                <p onClick={openAddSystem}>Add New System</p>
+                <p onClick={openAddSystem}>Add New {exam} System</p>
             </div>
+            {examSystems?.length === 0 && <p className='exam-empty'>No {exam} systems yet. Add one to start the {exam} question bank.</p>}
             <div className='d-flex flex-wrap'>
-                {allSystem?.map(item => {
+                {examSystems?.map(item => {
                     return (
                         <div className='system-cover' key={item._id}>
                             <div className='d-flex justify-content-space-between align-items-center'>
@@ -195,7 +205,7 @@ function Subject() {
             {/* add system popup start */}
             <div className="add-system-popup subject-popup d-none justify-content-center align-items-center">
                 <div>
-                    <p className='text-color'>Add New System</p>
+                    <p className='text-color'>Add New {exam} System</p>
                     {(serverOperationError) ? <p className='text-error'>{serverOperationError}</p> : ''}
                     <input type="text" placeholder='Enter the system name' value={systemName} onChange={e => setSystemName(e.target.value)} />
                     <button className='button' onClick={handleAddSystem}>{(serverOperationLoading) ? <span className="button-loader"></span> : 'Add'}</button>

@@ -74,4 +74,14 @@
     50% {
         transform: scale(1.06);
     }
-}
+}
+/* One group of sections per exam (SAT, EST) */
+.question-type-exam {
+    margin-bottom: 12px;
+}
+
+.question-type-exam-name {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 8px 0;
+}

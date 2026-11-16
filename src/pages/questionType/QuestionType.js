@@ -24,11 +24,17 @@ const QuestionType = () => {
     return (
         <div className='h-100vh d-flex justify-content-center align-items-center'>
             <div className='question-type-container d-flex justify-content-center align-items-center flex-direction-column'>
-                {allQuestionType.map(item => {
-                    return (
-                        <Link key={item._id} to={`/subject/${item.typeOfquestion}/${item._id}`}><button className='button'>{item.typeOfquestion}</button></Link>
-                    )
-                })}
+                {/* Each exam has the same sections; its systems are kept apart (SAT or EST) */}
+                {['SAT', 'EST'].map(exam => (
+                    <div key={exam} className='question-type-exam d-flex flex-direction-column align-items-center'>
+                        <p className='question-type-exam-name'>{exam}</p>
+                        {allQuestionType.map(item => {
+                            return (
+                                <Link key={item._id} to={`/subject/${item.typeOfquestion}/${item._id}?exam=${exam}`}><button className='button'>{item.typeOfquestion}</button></Link>
+                            )
+                        })}
+                    </div>
+                ))}
 
                 <div className='question-type-divider'></div>
 
